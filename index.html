@@ -3,109 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FS Cloud Tracker</title>
+    <title>FS Pro Tracker</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding: 20px; background-color: #121212; color: #e0e0e0; max-width: 600px; margin: 0 auto;}
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding: 20px; background-color: #121212; color: #e0e0e0; max-width: 600px; margin: 0 auto; padding-bottom: 80px;}
         .container { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         h1 { margin: 0; font-size: 1.5rem; color: #fff; }
         p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
-        #display { font-size: 3.5em; margin: 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
-        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888; transition: all 0.3s ease;}
+        
+        #display { font-size: 3.5em; margin: 10px 0 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
+        
+        /* Inputs Styles */
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-label { font-size: 0.75em; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
+        
+        #noteInput, #fsTypeSelect {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; 
+            background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none;
+        }
+        #noteInput:focus, #fsTypeSelect:focus { border-color: #0a84ff; }
+        
+        /* Dropdown Pfeil Customizing */
+        #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+
+        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
+        
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        button { padding: 25px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; color: white; }
+        button { padding: 20px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 1rem; color: white; width: 100%;}
         button:active { transform: scale(0.96); }
+        
         .btn-fs { background: linear-gradient(135deg, #ff3b30, #cc2d24); } 
         .btn-uni { background: linear-gradient(135deg, #0a84ff, #0060c0); } 
-        .btn-stop { width: 100%; background: #2c2c2e; border: 1px solid #444; color: #ff453a; font-size: 1.1em; padding: 20px; display: none; }
-        .chart-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
-        .pie-chart { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(#333 0% 100%); margin: 0 auto 20px auto; position: relative; }
-        .pie-chart::after { content: ""; position: absolute; width: 80px; height: 80px; background: #1e1e1e; border-radius: 50%; top: 30px; left: 30px; }
-        .stats-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .stat-box { background: #2c2c2e; padding: 10px; border-radius: 10px; min-width: 70px; }
-        .stat-val { display: block; font-size: 1.2em; font-weight: 800; }
-        .stat-label { font-size: 0.65em; text-transform: uppercase; color: #888; margin-top: 3px;}
+        .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; }
+        
+        /* Dashboard & Charts */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .dash-card { background: #2c2c2e; padding: 15px; border-radius: 12px; text-align: left; }
+        .dash-label { font-size: 0.7em; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 5px;}
+        .dash-val { font-size: 1.4em; font-weight: 800; color: white; }
+        
+        .chart-container { margin-top: 20px; padding: 20px; background: #2c2c2e; border-radius: 12px; }
+        .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 100px; padding-bottom: 20px; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 12%; }
+        .bar { width: 100%; background: #444; border-radius: 4px; transition: height 0.5s ease; min-height: 2px;}
+        .bar-day { font-size: 0.6em; color: #888; margin-top: 5px; }
+
+        .btn-export { background: transparent; border: 1px solid #444; color: #888; padding: 10px; font-size: 0.8em; margin-top: 30px; width: auto; display: inline-block; border-radius: 8px;}
         .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
-        .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .log-meta { color: #888; font-size: 0.8em; }
+        .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
+        .btn-delete { background: none; border: none; color: #444; font-size: 1.2em; padding: 5px;}
+        .log-note { display: block; color: #aaa; font-style: italic; font-size: 0.85em; }
+        .sub-tag { display: inline-block; font-size: 0.75em; background: #3a3a3c; padding: 2px 6px; border-radius: 4px; color: #ddd; margin-left: 5px; vertical-align: middle;}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>☁️ Cloud Balance</h1>
-    <p class="subtitle">Sync: Handy • Laptop • PC</p>
-    <div id="statusBadge" class="status-badge">Lade Daten...</div>
+    <h1>🏎️ FS Pro Tracker</h1>
+    <p class="subtitle">Version 5.0 • Subkategorien</p>
+
+    <div id="statusBadge" class="status-badge">Lade...</div>
     <div id="display">--:--:--</div>
-    <div id="startButtons" class="btn-grid" style="display:none">
-        <button class="btn-fs" onclick="startWork('FS')">🏎️ Formula Student</button>
-        <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni / Lernen</button>
-    </div>
-    <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Feierabend (Freizeit)</button>
-    <div class="chart-section">
-        <div class="pie-chart" id="pieChart"></div>
-        <div class="stats-row">
-            <div class="stat-box"><span class="stat-val" id="valFS" style="color:#ff453a">0%</span><span class="stat-label">FS</span></div>
-            <div class="stat-box"><span class="stat-val" id="valUni" style="color:#0a84ff">0%</span><span class="stat-label">Uni</span></div>
-            <div class="stat-box"><span class="stat-val" id="valFree" style="color:#30d158">0%</span><span class="stat-label">Freizeit</span></div>
+    
+    <div id="inputArea">
+        <div class="input-group">
+            <span class="input-label">1. FS Kategorie (Nur für FS relevant)</span>
+            <select id="fsTypeSelect">
+                <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
+                <option value="Werkstatt">🔧 Werkstatt</option>
+                <option value="Sitzung">🗣️ Sitzung</option>
+                <option value="Außentermin">🌍 Außentermin</option>
+                <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
+            </select>
         </div>
-        <p style="font-size:0.8em; color:#666; margin-top:15px">Gesamtzeit getrackt: <span id="totalHours">0</span>h</p>
+
+        <div class="input-group">
+            <span class="input-label">2. Notiz (Optional)</span>
+            <input type="text" id="noteInput" placeholder="Details... (z.B. Fahrwerk)">
+        </div>
+
+        <div id="startButtons" class="btn-grid">
+            <button class="btn-fs" onclick="startWork('FS')">START: FS Team</button>
+            <button class="btn-uni" onclick="startWork('Uni')">START: Uni</button>
+        </div>
     </div>
+
+    <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
+
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <span class="dash-label">🔥 Streak</span>
+            <span class="dash-val" id="streakVal">0 Tage</span>
+        </div>
+        <div class="dash-card">
+            <span class="dash-label">∅ Täglich (Saison)</span>
+            <span class="dash-val" id="avgVal">0h</span>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <span class="dash-label" style="margin-bottom:15px">Wochen-Trend</span>
+        <div class="bar-chart" id="weekChart"></div>
+    </div>
+
+    <div style="margin-top:20px; font-size:0.8em; color:#666">
+        FS: <span id="valFS" style="color:#ff3b30; font-weight:bold">0%</span> • 
+        Uni: <span id="valUni" style="color:#0a84ff; font-weight:bold">0%</span> • 
+        Total: <span id="totalHours" style="color:white; font-weight:bold">0</span>h
+    </div>
+
+    <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
     <ul id="logList" class="log-list"></ul>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // --- DEINE RICHTIGEN DATEN (Der Fehler ist hier behoben) ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
-      authDomain: "zeit-97904.firebaseapp.com",
-      databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "zeit-97904",
-      storageBucket: "zeit-97904.firebasestorage.app",
-      messagingSenderId: "677314069900",
-      appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
-    };
-    // -----------------------------------------------------------
+    // ⬇️⬇️⬇️ HIER WIEDER DEINE FIREBASE DATEN REIN ⬇️⬇️⬇️
+const firebaseConfig = {
+  apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
+  authDomain: "zeit-97904.firebaseapp.com",
+  databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "zeit-97904",
+  storageBucket: "zeit-97904.firebasestorage.app",
+  messagingSenderId: "677314069900",
+  appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
+};
+
+    // ⬆️⬆️⬆️ ENDE ⬆️⬆️⬆️
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    
     let tInterval;
     let localStartTime = 0;
-    const colors = { 'FS': '#ff453a', 'Uni': '#0a84ff', 'Freizeit': '#30d158' };
-    const labels = { 'FS': 'Formula Student', 'Uni': 'Uni', 'Freizeit': 'Freizeit' };
+    let historyData = {};
+    const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158' };
+    const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit' };
 
-    const statusRef = ref(db, 'status');
-    onValue(statusRef, (snapshot) => {
+    onValue(ref(db, 'status'), (snapshot) => {
         const data = snapshot.val();
         if (data && data.running) {
             localStartTime = data.startTime;
-            updateUI(true, data.category);
+            updateUI(true, data.category, data.subCategory);
+            
+            // Felder füllen falls Seite neu geladen wird
+            if(data.note) document.getElementById('noteInput').value = data.note;
+            if(data.subCategory) document.getElementById('fsTypeSelect').value = data.subCategory;
+
             if (!tInterval) tInterval = setInterval(updateDisplay, 1000);
         } else {
             if (tInterval) { clearInterval(tInterval); tInterval = null; }
             updateUI(false, "");
             document.getElementById('display').innerHTML = "Bereit";
-            document.getElementById('statusBadge').innerText = "Im Freizeit-Modus";
-            document.getElementById('statusBadge').style.color = "#30d158";
-            document.getElementById('statusBadge').style.background = "#30d15822";
+            document.getElementById('statusBadge').innerText = "Freizeit";
+            document.getElementById('noteInput').value = "";
         }
     });
 
-    const historyRef = ref(db, 'history');
-    onValue(historyRef, (snapshot) => { renderHistoryAndCharts(snapshot.val()); });
+    onValue(ref(db, 'history'), (snapshot) => { 
+        historyData = snapshot.val() || {};
+        renderAnalytics(historyData); 
+    });
 
     window.startWork = function(category) {
         const now = new Date().getTime();
+        const note = document.getElementById('noteInput').value;
+        // Subkategorie nur lesen, wenn FS gewählt wurde
+        let subCat = "";
+        if (category === 'FS') {
+            subCat = document.getElementById('fsTypeSelect').value;
+        }
+
         get(child(ref(db), 'status/lastStop')).then((snapshot) => {
             if (snapshot.exists()) {
                 const lastStop = snapshot.val();
                 if (now > lastStop + 60000) { 
-                     push(ref(db, 'history'), { category: 'Freizeit', start: lastStop, end: now, duration: now - lastStop, date: new Date(lastStop).toLocaleDateString() });
+                     push(ref(db, 'history'), { category: 'Freizeit', start: lastStop, end: now, duration: now - lastStop, date: new Date(lastStop).toLocaleDateString(), note: "Pause" });
                 }
             }
-            set(ref(db, 'status'), { running: true, startTime: now, category: category, lastStop: 0 });
+            // Wir speichern jetzt auch die subCategory
+            set(ref(db, 'status'), { running: true, startTime: now, category: category, subCategory: subCat, lastStop: 0, note: note });
         });
     }
 
@@ -114,65 +192,151 @@
             const state = snapshot.val();
             if (state && state.running) {
                 const now = new Date().getTime();
-                push(ref(db, 'history'), { category: state.category, start: state.startTime, end: now, duration: now - state.startTime, date: new Date(state.startTime).toLocaleDateString() });
-                set(ref(db, 'status'), { running: false, startTime: 0, category: "", lastStop: now });
+                const finalNote = document.getElementById('noteInput').value;
+                
+                push(ref(db, 'history'), { 
+                    category: state.category, 
+                    subCategory: state.subCategory || "", // Subkategorie speichern
+                    start: state.startTime, 
+                    end: now, 
+                    duration: now - state.startTime, 
+                    date: new Date(state.startTime).toLocaleDateString(), 
+                    note: finalNote 
+                });
+                
+                set(ref(db, 'status'), { running: false, startTime: 0, category: "", lastStop: now, note: "" });
             }
         });
+    }
+
+    window.deleteItem = function(key) {
+        if(confirm("Eintrag löschen?")) remove(ref(db, 'history/' + key));
+    }
+
+    window.downloadCSV = function() {
+        let csv = "Datum,Start,Ende,Kategorie,Unterkategorie,Minuten,Notiz\n";
+        Object.values(historyData).sort((a,b)=>b.start-a.start).forEach(e => {
+            const sub = e.subCategory ? e.subCategory : "-";
+            const noteClean = (e.note||"").replace(/,/g," ");
+            csv += `${new Date(e.start).toLocaleDateString()},${new Date(e.start).toLocaleTimeString()},${new Date(e.end).toLocaleTimeString()},${e.category},${sub},${Math.round(e.duration/60000)},${noteClean}\n`;
+        });
+        const link = document.createElement("a");
+        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+        link.download = "FS_Stats_Pro.csv";
+        link.click();
     }
 
     function updateDisplay() {
         if(!localStartTime) return;
         let diff = new Date().getTime() - localStartTime;
-        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById('display').innerHTML = (hours < 10 ? "0" + hours : hours) + ':' + (minutes < 10 ? "0" + minutes : minutes) + ':' + (seconds < 10 ? "0" + seconds : seconds);
+        let hrs = Math.floor(diff / 3600000);
+        let mins = Math.floor((diff % 3600000) / 60000);
+        let secs = Math.floor((diff % 60000) / 1000);
+        document.getElementById('display').innerHTML = (hrs<10?"0"+hrs:hrs) + ':' + (mins<10?"0"+mins:mins) + ':' + (secs<10?"0"+secs:secs);
     }
 
-    function updateUI(running, category) {
+    function updateUI(running, category, subCategory) {
         const startBtns = document.getElementById('startButtons');
         const stopBtn = document.getElementById('stopBtn');
-        const badge = document.getElementById('statusBadge');
-        if (running) {
+        const select = document.getElementById('fsTypeSelect');
+        
+        if(running) {
             startBtns.style.display = 'none';
             stopBtn.style.display = 'block';
             stopBtn.style.borderColor = colors[category];
-            badge.innerText = "Tracking: " + labels[category];
-            badge.style.color = colors[category];
-            badge.style.background = colors[category] + "22";
+            
+            // Badge Text
+            let badgeText = labels[category];
+            if(category === 'FS' && subCategory) {
+                badgeText += " • " + subCategory;
+            }
+            document.getElementById('statusBadge').innerText = badgeText;
+            document.getElementById('statusBadge').style.color = colors[category];
+            
+            // Inputs ausblenden (optional, aber cleaner)
+            // select.disabled = true;
         } else {
             startBtns.style.display = 'grid';
             stopBtn.style.display = 'none';
+            document.getElementById('statusBadge').style.color = "#30d158";
+            // select.disabled = false;
         }
     }
 
-    function renderHistoryAndCharts(data) {
-        if (!data) return;
+    function renderAnalytics(data) {
         const list = document.getElementById('logList');
         list.innerHTML = "";
         let totals = { 'FS': 0, 'Uni': 0, 'Freizeit': 0 };
         let grandTotal = 0;
-        const entries = Object.values(data).sort((a,b) => b.start - a.start);
-        entries.forEach(entry => {
-            if (totals[entry.category] !== undefined) { totals[entry.category] += entry.duration; grandTotal += entry.duration; }
-            if (list.children.length < 20) {
+        let daysWorked = new Set();
+        let dailySums = {};
+
+        const entries = Object.entries(data).sort(([,a],[,b]) => b.start - a.start);
+        
+        entries.forEach(([key, entry]) => {
+            if (totals[entry.category] !== undefined) { 
+                totals[entry.category] += entry.duration; 
+                grandTotal += entry.duration;
+            }
+            if(entry.category !== 'Freizeit') {
+                const dateKey = new Date(entry.start).toLocaleDateString();
+                daysWorked.add(dateKey);
+                dailySums[dateKey] = (dailySums[dateKey] || 0) + entry.duration;
+            }
+
+            if (list.children.length < 30) {
                 let li = document.createElement('li');
-                let hrs = Math.floor(entry.duration / (1000 * 60 * 60));
-                let mins = Math.floor((entry.duration / (1000 * 60)) % 60);
-                let dateObj = new Date(entry.start);
-                li.innerHTML = `<div><span style="color:${colors[entry.category]}; font-weight:bold; margin-right:5px">●</span><span style="color:#e0e0e0; font-weight:600">${labels[entry.category]}</span><div class="log-meta">${dateObj.toLocaleDateString()} • ${dateObj.getHours()}:${(dateObj.getMinutes()<10?'0':'')+dateObj.getMinutes()}</div></div><strong>${hrs}h ${mins}m</strong>`;
+                let hrs = Math.floor(entry.duration / 3600000);
+                let mins = Math.floor((entry.duration % 3600000) / 60000);
+                
+                // Subkategorie anzeigen (grauer Tag)
+                let subHtml = "";
+                if(entry.category === 'FS' && entry.subCategory) {
+                    subHtml = `<span class="sub-tag">${entry.subCategory}</span>`;
+                }
+
+                li.innerHTML = `<div><span style="color:${colors[entry.category]};">● ${labels[entry.category]}</span>${subHtml}<div class="log-meta">${new Date(entry.start).toLocaleDateString()}</div><span class="log-note">${entry.note || ""}</span></div><strong>${hrs}h ${mins}m</strong><button class="btn-delete" onclick="deleteItem('${key}')">×</button>`;
                 list.appendChild(li);
             }
         });
-        if (grandTotal === 0) grandTotal = 1;
-        const pFS = (totals['FS'] / grandTotal) * 100;
-        const pUni = (totals['Uni'] / grandTotal) * 100;
-        const pFree = (totals['Freizeit'] / grandTotal) * 100;
-        document.getElementById('valFS').innerText = Math.round(pFS) + "%";
-        document.getElementById('valUni').innerText = Math.round(pUni) + "%";
-        document.getElementById('valFree').innerText = Math.round(pFree) + "%";
-        document.getElementById('totalHours').innerText = Math.floor(grandTotal / (1000 * 60 * 60));
-        document.getElementById('pieChart').style.background = `conic-gradient(${colors['FS']} 0% ${pFS}%, ${colors['Uni']} ${pFS}% ${pFS + pUni}%, ${colors['Freizeit']} ${pFS + pUni}% 100%)`;
+
+        // Dashboard Stats
+        let workTotal = totals['FS'] + totals['Uni'];
+        if(grandTotal === 0) grandTotal = 1;
+        document.getElementById('valFS').innerText = Math.round((totals['FS']/grandTotal)*100) + "%";
+        document.getElementById('valUni').innerText = Math.round((totals['Uni']/grandTotal)*100) + "%";
+        document.getElementById('totalHours').innerText = (grandTotal / 3600000).toFixed(1);
+        let avgMs = daysWorked.size > 0 ? workTotal / daysWorked.size : 0;
+        document.getElementById('avgVal').innerText = (avgMs / 3600000).toFixed(1) + "h";
+
+        // Streak
+        let streak = 0;
+        let checkDate = new Date();
+        for(let i=0; i<365; i++) {
+            let dStr = checkDate.toLocaleDateString();
+            if(dailySums[dStr] > 0) streak++;
+            else if (i===0 && !dailySums[dStr]) continue;
+            else break;
+            checkDate.setDate(checkDate.getDate() - 1);
+        }
+        document.getElementById('streakVal').innerText = streak + (streak===1 ? " Tag" : " Tage");
+
+        // Chart
+        const chartDiv = document.getElementById('weekChart');
+        chartDiv.innerHTML = "";
+        const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+        for (let i = 6; i >= 0; i--) {
+            let d = new Date();
+            d.setDate(d.getDate() - i);
+            let dStr = d.toLocaleDateString();
+            let val = dailySums[dStr] || 0;
+            let percent = Math.min((val / 3600000) * 10, 100);
+            let barColor = val > 0 ? '#ff3b30' : '#444';
+            let col = document.createElement('div');
+            col.className = 'bar-col';
+            col.innerHTML = `<div class="bar" style="height:${percent}%; background:${barColor}"></div><span class="bar-day">${days[d.getDay()]}</span>`;
+            chartDiv.appendChild(col);
+        }
     }
 </script>
 </body>
