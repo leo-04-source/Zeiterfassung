@@ -57,21 +57,17 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
-  authDomain: "zeit-97904.firebaseapp.com",
-  databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "zeit-97904",
-  storageBucket: "zeit-97904.firebasestorage.app",
-  messagingSenderId: "677314069900",
-  appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
-};
-    
+    // --- DEINE RICHTIGEN DATEN (Der Fehler ist hier behoben) ---
     const firebaseConfig = {
-        // ... hier muss dein Code rein ...
+      apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
+      authDomain: "zeit-97904.firebaseapp.com",
+      databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "zeit-97904",
+      storageBucket: "zeit-97904.firebasestorage.app",
+      messagingSenderId: "677314069900",
+      appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
     };
-
-    // ---------------------------------------
+    // -----------------------------------------------------------
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
