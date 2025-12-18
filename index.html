@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FS Cloud Tracker</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding: 20px; background-color: #121212; color: #e0e0e0; max-width: 600px; margin: 0 auto;}
+        .container { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { margin: 0; font-size: 1.5rem; color: #fff; }
+        p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
+        #display { font-size: 3.5em; margin: 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
+        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888; transition: all 0.3s ease;}
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        button { padding: 25px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; color: white; }
+        button:active { transform: scale(0.96); }
+        .btn-fs { background: linear-gradient(135deg, #ff3b30, #cc2d24); } 
+        .btn-uni { background: linear-gradient(135deg, #0a84ff, #0060c0); } 
+        .btn-stop { width: 100%; background: #2c2c2e; border: 1px solid #444; color: #ff453a; font-size: 1.1em; padding: 20px; display: none; }
+        .chart-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+        .pie-chart { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(#333 0% 100%); margin: 0 auto 20px auto; position: relative; }
+        .pie-chart::after { content: ""; position: absolute; width: 80px; height: 80px; background: #1e1e1e; border-radius: 50%; top: 30px; left: 30px; }
+        .stats-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
+        .stat-box { background: #2c2c2e; padding: 10px; border-radius: 10px; min-width: 70px; }
+        .stat-val { display: block; font-size: 1.2em; font-weight: 800; }
+        .stat-label { font-size: 0.65em; text-transform: uppercase; color: #888; margin-top: 3px;}
+        .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
+        .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .log-meta { color: #888; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>☁️ Cloud Balance</h1>
+    <p class="subtitle">Sync: Handy • Laptop • PC</p>
+    <div id="statusBadge" class="status-badge">Lade Daten...</div>
+    <div id="display">--:--:--</div>
+    <div id="startButtons" class="btn-grid" style="display:none">
+        <button class="btn-fs" onclick="startWork('FS')">🏎️ Formula Student</button>
+        <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni / Lernen</button>
+    </div>
+    <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Feierabend (Freizeit)</button>
+    <div class="chart-section">
+        <div class="pie-chart" id="pieChart"></div>
+        <div class="stats-row">
+            <div class="stat-box"><span class="stat-val" id="valFS" style="color:#ff453a">0%</span><span class="stat-label">FS</span></div>
+            <div class="stat-box"><span class="stat-val" id="valUni" style="color:#0a84ff">0%</span><span class="stat-label">Uni</span></div>
+            <div class="stat-box"><span class="stat-val" id="valFree" style="color:#30d158">0%</span><span class="stat-label">Freizeit</span></div>
+        </div>
+        <p style="font-size:0.8em; color:#666; margin-top:15px">Gesamtzeit getrackt: <span id="totalHours">0</span>h</p>
+    </div>
+    <ul id="logList" class="log-list"></ul>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
+  authDomain: "zeit-97904.firebaseapp.com",
+  databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "zeit-97904",
+  storageBucket: "zeit-97904.firebasestorage.app",
+  messagingSenderId: "677314069900",
+  appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
+};
+    
+    const firebaseConfig = {
+        // ... hier muss dein Code rein ...
+    };
+
+    // ---------------------------------------
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let tInterval;
+    let localStartTime = 0;
+    const colors = { 'FS': '#ff453a', 'Uni': '#0a84ff', 'Freizeit': '#30d158' };
+    const labels = { 'FS': 'Formula Student', 'Uni': 'Uni', 'Freizeit': 'Freizeit' };
+
+    const statusRef = ref(db, 'status');
+    onValue(statusRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.running) {
+            localStartTime = data.startTime;
+            updateUI(true, data.category);
+            if (!tInterval) tInterval = setInterval(updateDisplay, 1000);
+        } else {
+            if (tInterval) { clearInterval(tInterval); tInterval = null; }
+            updateUI(false, "");
+            document.getElementById('display').innerHTML = "Bereit";
+            document.getElementById('statusBadge').innerText = "Im Freizeit-Modus";
+            document.getElementById('statusBadge').style.color = "#30d158";
+            document.getElementById('statusBadge').style.background = "#30d15822";
+        }
+    });
+
+    const historyRef = ref(db, 'history');
+    onValue(historyRef, (snapshot) => { renderHistoryAndCharts(snapshot.val()); });
+
+    window.startWork = function(category) {
+        const now = new Date().getTime();
+        get(child(ref(db), 'status/lastStop')).then((snapshot) => {
+            if (snapshot.exists()) {
+                const lastStop = snapshot.val();
+                if (now > lastStop + 60000) { 
+                     push(ref(db, 'history'), { category: 'Freizeit', start: lastStop, end: now, duration: now - lastStop, date: new Date(lastStop).toLocaleDateString() });
+                }
+            }
+            set(ref(db, 'status'), { running: true, startTime: now, category: category, lastStop: 0 });
+        });
+    }
+
+    window.stopWork = function() {
+        get(child(ref(db), 'status')).then((snapshot) => {
+            const state = snapshot.val();
+            if (state && state.running) {
+                const now = new Date().getTime();
+                push(ref(db, 'history'), { category: state.category, start: state.startTime, end: now, duration: now - state.startTime, date: new Date(state.startTime).toLocaleDateString() });
+                set(ref(db, 'status'), { running: false, startTime: 0, category: "", lastStop: now });
+            }
+        });
+    }
+
+    function updateDisplay() {
+        if(!localStartTime) return;
+        let diff = new Date().getTime() - localStartTime;
+        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('display').innerHTML = (hours < 10 ? "0" + hours : hours) + ':' + (minutes < 10 ? "0" + minutes : minutes) + ':' + (seconds < 10 ? "0" + seconds : seconds);
+    }
+
+    function updateUI(running, category) {
+        const startBtns = document.getElementById('startButtons');
+        const stopBtn = document.getElementById('stopBtn');
+        const badge = document.getElementById('statusBadge');
+        if (running) {
+            startBtns.style.display = 'none';
+            stopBtn.style.display = 'block';
+            stopBtn.style.borderColor = colors[category];
+            badge.innerText = "Tracking: " + labels[category];
+            badge.style.color = colors[category];
+            badge.style.background = colors[category] + "22";
+        } else {
+            startBtns.style.display = 'grid';
+            stopBtn.style.display = 'none';
+        }
+    }
+
+    function renderHistoryAndCharts(data) {
+        if (!data) return;
+        const list = document.getElementById('logList');
+        list.innerHTML = "";
+        let totals = { 'FS': 0, 'Uni': 0, 'Freizeit': 0 };
+        let grandTotal = 0;
+        const entries = Object.values(data).sort((a,b) => b.start - a.start);
+        entries.forEach(entry => {
+            if (totals[entry.category] !== undefined) { totals[entry.category] += entry.duration; grandTotal += entry.duration; }
+            if (list.children.length < 20) {
+                let li = document.createElement('li');
+                let hrs = Math.floor(entry.duration / (1000 * 60 * 60));
+                let mins = Math.floor((entry.duration / (1000 * 60)) % 60);
+                let dateObj = new Date(entry.start);
+                li.innerHTML = `<div><span style="color:${colors[entry.category]}; font-weight:bold; margin-right:5px">●</span><span style="color:#e0e0e0; font-weight:600">${labels[entry.category]}</span><div class="log-meta">${dateObj.toLocaleDateString()} • ${dateObj.getHours()}:${(dateObj.getMinutes()<10?'0':'')+dateObj.getMinutes()}</div></div><strong>${hrs}h ${mins}m</strong>`;
+                list.appendChild(li);
+            }
+        });
+        if (grandTotal === 0) grandTotal = 1;
+        const pFS = (totals['FS'] / grandTotal) * 100;
+        const pUni = (totals['Uni'] / grandTotal) * 100;
+        const pFree = (totals['Freizeit'] / grandTotal) * 100;
+        document.getElementById('valFS').innerText = Math.round(pFS) + "%";
+        document.getElementById('valUni').innerText = Math.round(pUni) + "%";
+        document.getElementById('valFree').innerText = Math.round(pFree) + "%";
+        document.getElementById('totalHours').innerText = Math.floor(grandTotal / (1000 * 60 * 60));
+        document.getElementById('pieChart').style.background = `conic-gradient(${colors['FS']} 0% ${pFS}%, ${colors['Uni']} ${pFS}% ${pFS + pUni}%, ${colors['Freizeit']} ${pFS + pUni}% 100%)`;
+    }
+</script>
+</body>
+</html>
