@@ -41,7 +41,7 @@
         
         /* --- MAIN CONTENT --- */
         .main-content { flex: 1; margin-left: 250px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
-        .view-container { width: 100%; max-width: 800px; text-align: center; margin-bottom: 80px; display: none; } /* Max-width erhöht für Kalender */
+        .view-container { width: 100%; max-width: 800px; text-align: center; margin-bottom: 80px; display: none; }
         .view-container.active-view { display: block; }
 
         .card-box { 
@@ -132,7 +132,7 @@
         
         .cal-day { 
             background: #111; border: 1px solid #2a2a2a; 
-            height: 100px; /* HIER: Größere Felder */
+            height: 100px; 
             border-radius: 4px; 
             display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
             padding: 5px; overflow: hidden;
@@ -140,10 +140,12 @@
         }
         .cal-day:hover { border-color: #666; background: #1a1a1a; }
         .cal-day.active { border-color: #ff3b30; background: #1a1a1a; box-shadow: 0 0 10px rgba(255,59,48,0.2); }
+        .cal-day.today { border: 2px solid #0a84ff; background: #161616; } /* TODAY HIGHLIGHT */
         .cal-day.empty { background: transparent; border: none; cursor: default; }
         
         .cal-num { font-size: 0.8em; font-weight: bold; color: #666; align-self: flex-end; margin-bottom: 2px;}
-        
+        .cal-today-badge { position: absolute; top: 2px; left: 4px; font-size: 0.6em; color: #0a84ff; font-weight: 900; letter-spacing: 1px;}
+
         /* Event in Grid Cell */
         .cal-cell-event {
             font-size: 0.65em; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -154,7 +156,7 @@
         .cal-summary-dots { position: absolute; bottom: 3px; left: 5px; display: flex; gap: 2px; }
         .cal-dot { width: 4px; height: 4px; border-radius: 50%; opacity: 0.8; }
         
-        /* --- TIMELINE VIEW STYLES (NEW) --- */
+        /* --- TIMELINE VIEW STYLES --- */
         .timeline-container {
             display: grid; grid-template-columns: 50px 1fr; gap: 0; 
             background: #111; border: 1px solid #333; border-radius: 6px; padding: 10px;
@@ -238,7 +240,7 @@
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
                 <h1>Overview</h1>
-                <p class="subtitle">Season 25/26 • v8.0</p>
+                <p class="subtitle">Season 25/26 • v8.1</p>
                 <p class="input-label" style="text-align:center; margin-bottom:10px;">Quick Launch</p>
                 <div class="btn-grid start-buttons-container">
                     <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
@@ -450,7 +452,7 @@
         renderCalendar();
     }
 
-    // --- NEW: TIMELINE RENDER LOGIC ---
+    // --- TIMELINE RENDER LOGIC ---
     window.selectDate = function(dateStr) {
         selectedDateStr = dateStr;
         const detailBox = document.getElementById('calDetail');
@@ -464,16 +466,15 @@
         detailDate.innerText = dateStr;
         timelineView.innerHTML = "";
 
-        // 1. Gather Data for this day
+        // Gather Data
         const dayLogs = Object.entries(historyData).filter(([k, v]) => v.date === dateStr);
         const dayEvents = Object.entries(eventData).filter(([k, v]) => v.date === dateStr);
 
-        // 2. Build 24h Grid (06:00 to 23:00 for visual focus, simplified)
+        // Build 24h Grid (06:00 to 23:00)
         for(let i=6; i<24; i++) {
             const hourStr = (i<10?"0"+i:i) + ":00";
             let contentHtml = "";
 
-            // Find Events starting in this hour
             dayEvents.forEach(([key, ev]) => {
                 let evHour = -1;
                 if(ev.time) evHour = parseInt(ev.time.split(':')[0]);
@@ -487,7 +488,6 @@
                 }
             });
 
-            // Find Logs starting in this hour
             dayLogs.forEach(([key, log]) => {
                 const logDate = new Date(log.start);
                 if(logDate.getHours() === i) {
@@ -507,7 +507,6 @@
                 <div class="tl-content">${contentHtml}</div>
             `;
         }
-        
         detailBox.classList.add('show');
     }
 
@@ -523,24 +522,33 @@
         let startOffset = firstDay === 0 ? 6 : firstDay - 1; 
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+        // Check Today
+        const now = new Date();
+        const isCurrentMonth = (now.getMonth() === month && now.getFullYear() === year);
+        const todayDay = now.getDate();
+
         for(let i=0; i<startOffset; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
 
         for(let i=1; i<=daysInMonth; i++) {
             const dateObj = new Date(year, month, i);
             const dateStr = dateObj.toLocaleDateString(); 
+            
+            // Check if Today
+            let todayClass = (isCurrentMonth && i === todayDay) ? "today" : "";
+            let todayBadge = (isCurrentMonth && i === todayDay) ? `<div class="cal-today-badge">TODAY</div>` : "";
+
             let dayDur = 0;
             let catsPresent = new Set();
             Object.values(historyData).forEach(entry => {
                 if(entry.date === dateStr) { dayDur += entry.duration; catsPresent.add(entry.category); }
             });
 
-            // Find Events for Cell
             let cellEventsHtml = "";
             let eventCount = 0;
             Object.values(eventData).forEach(ev => {
                 if(ev.date === dateStr) {
                     eventCount++;
-                    if(eventCount <= 3) { // Show max 3 items per cell
+                    if(eventCount <= 3) { 
                         const col = colors[ev.category] || "#888";
                         const timeLabel = ev.time ? ev.time : "";
                         cellEventsHtml += `<div class="cal-cell-event" style="border-left-color:${col}">${timeLabel} ${ev.title}</div>`;
@@ -558,7 +566,8 @@
             }
 
             grid.innerHTML += `
-            <div class="cal-day" id="day-${dateStr}" onclick="selectDate('${dateStr}')">
+            <div class="cal-day ${todayClass}" id="day-${dateStr}" onclick="selectDate('${dateStr}')">
+                ${todayBadge}
                 <span class="cal-num">${i}</span>
                 ${cellEventsHtml}
                 ${dotHtml}
