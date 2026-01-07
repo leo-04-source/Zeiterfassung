@@ -41,7 +41,7 @@
         
         /* --- MAIN CONTENT --- */
         .main-content { flex: 1; margin-left: 250px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
-        .view-container { width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px; display: none; }
+        .view-container { width: 100%; max-width: 800px; text-align: center; margin-bottom: 80px; display: none; } /* Max-width erhöht für Kalender */
         .view-container.active-view { display: block; }
 
         .card-box { 
@@ -122,32 +122,56 @@
         .log-note { display: block; color: #666; font-style: italic; font-size: 0.85em; }
         .sub-tag { display: inline-block; font-size: 0.7em; background: #222; padding: 2px 6px; border-radius: 2px; color: #ccc; margin-left: 5px; vertical-align: middle; border: 1px solid #444;}
 
-        /* --- CALENDAR STYLES --- */
+        /* --- CALENDAR STYLES UPDATED --- */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .cal-btn { background: #222; border: 1px solid #444; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .cal-title { font-size: 1.1em; font-weight: 900; text-transform: uppercase; color: #fff; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; min-height: 400px; }
         .cal-head-day { text-align: center; font-size: 0.6em; color: #666; font-weight: bold; text-transform: uppercase; padding-bottom: 5px;}
         
         .cal-day { 
-            background: #111; border: 1px solid #2a2a2a; height: 50px; border-radius: 4px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #111; border: 1px solid #2a2a2a; 
+            height: 100px; /* HIER: Größere Felder */
+            border-radius: 4px; 
+            display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+            padding: 5px; overflow: hidden;
             cursor: pointer; position: relative; transition: 0.2s;
         }
         .cal-day:hover { border-color: #666; background: #1a1a1a; }
         .cal-day.active { border-color: #ff3b30; background: #1a1a1a; box-shadow: 0 0 10px rgba(255,59,48,0.2); }
         .cal-day.empty { background: transparent; border: none; cursor: default; }
         
-        .cal-num { font-size: 0.8em; font-weight: bold; color: #888; }
-        .cal-val { font-size: 0.7em; font-weight: 800; color: #fff; margin-top: 2px; font-family: 'Courier New', monospace; }
+        .cal-num { font-size: 0.8em; font-weight: bold; color: #666; align-self: flex-end; margin-bottom: 2px;}
         
-        .cal-dots { display: flex; gap: 2px; margin-top: 3px; height: 3px; width: 80%; justify-content: center;}
-        .cal-dot { width: 100%; height: 100%; border-radius: 1px; opacity: 0.8; }
-        
-        .cal-event-mark {
-            position: absolute; top: 2px; right: 2px; width: 0; height: 0; 
-            border-left: 6px solid transparent; border-top: 6px solid #fff;
+        /* Event in Grid Cell */
+        .cal-cell-event {
+            font-size: 0.65em; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            background: #222; margin-bottom: 2px; padding: 2px 4px; border-radius: 2px; color: #ddd;
+            border-left: 2px solid #888; text-align: left;
         }
+
+        .cal-summary-dots { position: absolute; bottom: 3px; left: 5px; display: flex; gap: 2px; }
+        .cal-dot { width: 4px; height: 4px; border-radius: 50%; opacity: 0.8; }
+        
+        /* --- TIMELINE VIEW STYLES (NEW) --- */
+        .timeline-container {
+            display: grid; grid-template-columns: 50px 1fr; gap: 0; 
+            background: #111; border: 1px solid #333; border-radius: 6px; padding: 10px;
+            max-height: 500px; overflow-y: auto;
+        }
+        .tl-hour { 
+            color: #666; font-size: 0.7em; font-family: 'Courier New'; font-weight: bold; 
+            border-bottom: 1px solid #222; padding: 10px 5px; text-align: right;
+        }
+        .tl-content { border-bottom: 1px solid #222; padding: 5px; min-height: 40px; position: relative;}
+        
+        .tl-item {
+            font-size: 0.75em; padding: 4px 8px; border-radius: 4px; margin-bottom: 2px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .tl-item.event { background: #222; border: 1px solid #444; color: #fff; }
+        .tl-item.log { background: rgba(255, 255, 255, 0.05); border-left: 3px solid #666; }
 
         .detail-box { background: #111; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-top: 20px; display: none; }
         .detail-box.show { display: block; animation: fadeIn 0.3s; }
@@ -214,7 +238,7 @@
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
                 <h1>Overview</h1>
-                <p class="subtitle">Season 25/26 • v7.9 (Fix)</p>
+                <p class="subtitle">Season 25/26 • v8.0</p>
                 <p class="input-label" style="text-align:center; margin-bottom:10px;">Quick Launch</p>
                 <div class="btn-grid start-buttons-container">
                     <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
@@ -300,10 +324,10 @@
                 <div id="calDetail" class="detail-box">
                     <div class="detail-title">
                         <span id="detailDate">Date</span>
-                        <span id="detailTotal">Strategy & Data</span>
+                        <span>Day Plan</span>
                     </div>
-                    <div id="eventListArea" style="text-align:left; margin-bottom:15px;"></div>
-                    <ul id="detailList" class="log-list" style="margin-top:0; border-top:none;"></ul>
+                    
+                    <div id="timelineView" class="timeline-container"></div>
                     
                     <button class="btn-add-event" onclick="openModal()">➕ Add Event / Termin</button>
                 </div>
@@ -355,29 +379,20 @@
 
     window.toggleMenu = function() { document.getElementById('sidebar').classList.toggle('open'); }
 
-    // --- IMPORT ICS LOGIC ---
     window.importICS = function(input) {
         const file = input.files[0];
         if(!file) return;
-        
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const content = e.target.result;
-                const events = parseICS(content);
+                const events = parseICS(e.target.result);
                 if(events.length > 0) {
                     if(confirm("Found " + events.length + " events. Import now?")) {
-                        events.forEach(ev => {
-                             push(ref(db, 'events'), ev);
-                        });
+                        events.forEach(ev => push(ref(db, 'events'), ev));
                         alert("Import successful!");
                     }
-                } else {
-                    alert("No compatible events found in file.");
-                }
-            } catch(err) {
-                alert("Error reading file: " + err);
-            }
+                } else alert("No events found.");
+            } catch(err) { alert("Error: " + err); }
             input.value = ""; 
         };
         reader.readAsText(file);
@@ -388,35 +403,20 @@
         const lines = icsString.split(/\r\n|\n|\r/);
         let inEvent = false;
         let currentEvent = {};
-        
         lines.forEach(line => {
-            if(line.startsWith('BEGIN:VEVENT')) {
-                inEvent = true;
-                currentEvent = {};
-            } else if (line.startsWith('END:VEVENT')) {
-                inEvent = false;
-                if(currentEvent.date && currentEvent.title) {
-                    events.push(currentEvent);
-                }
-            } else if (inEvent) {
+            if(line.startsWith('BEGIN:VEVENT')) { inEvent = true; currentEvent = {}; } 
+            else if (line.startsWith('END:VEVENT')) { inEvent = false; if(currentEvent.date && currentEvent.title) events.push(currentEvent); } 
+            else if (inEvent) {
                 if(line.startsWith('SUMMARY:')) currentEvent.title = line.substring(8);
                 if(line.startsWith('DTSTART')) {
-                    const parts = line.split(':');
-                    const val = parts[1];
+                    const parts = line.split(':'); const val = parts[1];
                     if(val) {
-                        const y = val.substring(0,4);
-                        const m = val.substring(4,6);
-                        const d = val.substring(6,8);
+                        const y = val.substring(0,4); const m = val.substring(4,6); const d = val.substring(6,8);
                         currentEvent.date = parseInt(d) + "." + parseInt(m) + "." + y;
-                        
                         if(val.includes('T')) {
                              const timePart = val.split('T')[1];
-                             const hh = timePart.substring(0,2);
-                             const mm = timePart.substring(2,4);
-                             currentEvent.time = hh + ":" + mm;
-                        } else {
-                             currentEvent.time = "";
-                        }
+                             currentEvent.time = timePart.substring(0,2) + ":" + timePart.substring(2,4);
+                        } else currentEvent.time = "";
                     }
                 }
             }
@@ -425,7 +425,6 @@
         return events;
     }
 
-    // --- EVENT LOGIC ---
     window.openModal = function() {
         if(!selectedDateStr) return alert("Please select a date first.");
         document.getElementById('eventModal').style.display = 'flex';
@@ -446,53 +445,69 @@
     }
     window.deleteEvent = function(key) { if(confirm("Delete Event?")) remove(ref(db, 'events/' + key)); }
 
-    // --- CALENDAR LOGIC ---
     window.changeMonth = function(delta) {
         currentCalDate.setMonth(currentCalDate.getMonth() + delta);
         renderCalendar();
     }
 
+    // --- NEW: TIMELINE RENDER LOGIC ---
     window.selectDate = function(dateStr) {
         selectedDateStr = dateStr;
         const detailBox = document.getElementById('calDetail');
-        const detailList = document.getElementById('detailList');
-        const eventListArea = document.getElementById('eventListArea');
         const detailDate = document.getElementById('detailDate');
+        const timelineView = document.getElementById('timelineView');
 
         document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('active'));
         const dayEl = document.getElementById('day-' + dateStr);
         if(dayEl) dayEl.classList.add('active');
 
-        const dayLogs = Object.entries(historyData).filter(([k, v]) => v.date === dateStr).sort(([,a],[,b]) => a.start - b.start);
+        detailDate.innerText = dateStr;
+        timelineView.innerHTML = "";
+
+        // 1. Gather Data for this day
+        const dayLogs = Object.entries(historyData).filter(([k, v]) => v.date === dateStr);
         const dayEvents = Object.entries(eventData).filter(([k, v]) => v.date === dateStr);
 
-        detailList.innerHTML = "";
-        eventListArea.innerHTML = "";
+        // 2. Build 24h Grid (06:00 to 23:00 for visual focus, simplified)
+        for(let i=6; i<24; i++) {
+            const hourStr = (i<10?"0"+i:i) + ":00";
+            let contentHtml = "";
 
-        if(dayEvents.length > 0) {
+            // Find Events starting in this hour
             dayEvents.forEach(([key, ev]) => {
-                const timeStr = ev.time ? `<span style="color:#fff; background:#333; padding:2px 4px; border-radius:3px; font-size:0.8em; margin-right:5px;">${ev.time}</span>` : "";
-                const col = colors[ev.category] || "#888";
-                eventListArea.innerHTML += `
-                    <div style="background:#222; padding:8px; border-left:3px solid ${col}; margin-bottom:5px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>${timeStr}<span style="font-weight:bold; color:#e0e0e0;">${ev.title}</span></div>
-                        <button onclick="deleteEvent('${key}')" style="background:none; border:none; color:#444; padding:0; width:auto; font-size:1.2em;">×</button>
-                    </div>`;
+                let evHour = -1;
+                if(ev.time) evHour = parseInt(ev.time.split(':')[0]);
+                if(evHour === i) {
+                     const col = colors[ev.category] || "#888";
+                     contentHtml += `
+                     <div class="tl-item event" style="border-left-color:${col}">
+                        <span>${ev.time} ${ev.title}</span>
+                        <button onclick="deleteEvent('${key}')" style="background:none;border:none;color:#666;font-size:1em;padding:0;width:auto;">×</button>
+                     </div>`;
+                }
             });
-        }
 
-        let totalMs = 0;
-        dayLogs.forEach(([key, entry]) => {
-            totalMs += entry.duration;
-            let li = document.createElement('li');
-            let hrs = Math.floor(entry.duration / 3600000);
-            let mins = Math.floor((entry.duration % 3600000) / 60000);
-            let subHtml = (entry.category === 'FS' && entry.subCategory) ? `<span class="sub-tag">${entry.subCategory}</span>` : "";
-            let catColor = colors[entry.category] || "#888";
-            li.innerHTML = `<div><span style="color:${catColor}; font-weight:bold; font-family:'Courier New'">[${labels[entry.category] || entry.category}]</span>${subHtml}<span class="log-note"> ${entry.note || ""}</span></div><strong style="font-family:'Courier New'">${hrs}h ${mins}m</strong>`;
-            detailList.appendChild(li);
-        });
-        detailDate.innerText = dateStr;
+            // Find Logs starting in this hour
+            dayLogs.forEach(([key, log]) => {
+                const logDate = new Date(log.start);
+                if(logDate.getHours() === i) {
+                    const col = colors[log.category] || "#888";
+                    const durationMins = Math.round(log.duration/60000);
+                    const timeLabel = logDate.toLocaleTimeString().substr(0,5);
+                    contentHtml += `
+                     <div class="tl-item log" style="border-left-color:${col}">
+                        <div><span style="color:${col};font-weight:bold">${timeLabel}</span> [${log.category}] ${log.note || ""}</div>
+                        <div style="font-weight:bold;">${durationMins}m</div>
+                     </div>`;
+                }
+            });
+
+            timelineView.innerHTML += `
+                <div class="tl-hour">${hourStr}</div>
+                <div class="tl-content">${contentHtml}</div>
+            `;
+        }
+        
         detailBox.classList.add('show');
     }
 
@@ -519,26 +534,34 @@
                 if(entry.date === dateStr) { dayDur += entry.duration; catsPresent.add(entry.category); }
             });
 
-            let hasEvents = Object.values(eventData).some(ev => ev.date === dateStr);
-            let valHtml = "";
-            let dotHtml = "";
-            let eventMarkHtml = hasEvents ? `<div class="cal-event-mark" style="border-top-color:${colors.Uni}"></div>` : ""; 
+            // Find Events for Cell
+            let cellEventsHtml = "";
+            let eventCount = 0;
+            Object.values(eventData).forEach(ev => {
+                if(ev.date === dateStr) {
+                    eventCount++;
+                    if(eventCount <= 3) { // Show max 3 items per cell
+                        const col = colors[ev.category] || "#888";
+                        const timeLabel = ev.time ? ev.time : "";
+                        cellEventsHtml += `<div class="cal-cell-event" style="border-left-color:${col}">${timeLabel} ${ev.title}</div>`;
+                    }
+                }
+            });
 
+            let dotHtml = "";
             if(dayDur > 0) {
-                let h = Math.round(dayDur / 3600000 * 10) / 10; 
-                valHtml = `<span class="cal-val">${h}h</span>`;
-                dotHtml = `<div class="cal-dots">`;
+                dotHtml = `<div class="cal-summary-dots">`;
                 if(catsPresent.has('FS')) dotHtml += `<div class="cal-dot" style="background:${colors.FS}"></div>`;
                 if(catsPresent.has('Uni')) dotHtml += `<div class="cal-dot" style="background:${colors.Uni}"></div>`;
                 if(catsPresent.has('Freizeit')) dotHtml += `<div class="cal-dot" style="background:${colors.Freizeit}"></div>`;
-                if(catsPresent.has('Schlaf')) dotHtml += `<div class="cal-dot" style="background:${colors.Schlaf}"></div>`;
                 dotHtml += `</div>`;
-            } else if (hasEvents) {
-                 valHtml = `<span class="cal-val" style="color:#666">•</span>`;
             }
+
             grid.innerHTML += `
             <div class="cal-day" id="day-${dateStr}" onclick="selectDate('${dateStr}')">
-                <span class="cal-num">${i}</span>${valHtml}${dotHtml}${eventMarkHtml}
+                <span class="cal-num">${i}</span>
+                ${cellEventsHtml}
+                ${dotHtml}
             </div>`;
         }
     }
