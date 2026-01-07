@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Race Control - Modern</title>
+    <title>Race Control - Full Spec</title>
     <style>
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --text-color: #ffffff;
-            --accent-color: #3498db; /* Das schöne Blau von vorher */
-            --success-color: #2ecc71; /* Grün für Erledigt/Start */
-            --danger-color: #e74c3c; /* Rot für Löschen/Stop */
-            --warning-color: #f1c40f; /* Gelb für Safety Car */
+            --accent-color: #3498db; /* Das moderne Blau */
+            --success-color: #2ecc71; 
+            --danger-color: #e74c3c; 
+            --warning-color: #f1c40f; 
             --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -26,148 +26,90 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            transition: all 0.3s ease;
         }
 
-        /* Container für max Breite */
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
+        .container { width: 100%; max-width: 700px; }
 
         /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #333;
-        }
+        header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
 
-        h1 {
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        /* Buttons allgemein */
+        /* Buttons & Inputs Global Style */
         button {
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            color: white;
-            font-family: inherit;
+            border: none; padding: 10px 15px; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            color: white; font-family: inherit; transition: opacity 0.2s;
         }
+        button:hover { opacity: 0.9; }
 
-        button:active { transform: scale(0.96); }
-
-        /* Top Controls (Safety Car & Parc Fermé) */
-        .top-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+        input[type="text"] {
+            padding: 12px; border-radius: 8px; border: 1px solid #444;
+            background: #2c2c2c; color: white; font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
         }
+        input[type="text"]:focus { border-color: var(--accent-color); }
 
+        /* Top Controls */
+        .top-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .btn-safety { background-color: var(--warning-color); color: #000; }
         .btn-ferme { background-color: #34495e; }
 
-        /* Warmup Card */
+        /* Card Style */
         .card {
             background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            margin-bottom: 25px;
+            padding: 20px; border-radius: 12px; margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        .card h3 { margin-top: 0; color: var(--accent-color); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 15px; }
 
-        .card h3 { margin-top: 0; color: var(--accent-color); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-
-        .checklist label {
-            display: block;
-            margin-bottom: 10px;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-        
+        /* Warmup Checklist */
+        .checklist label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 1rem; }
         input[type="checkbox"] { transform: scale(1.2); margin-right: 10px; }
 
-        /* Input Area */
-        .input-area {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 15px;
-            border-radius: 12px;
-            border: 2px solid #333;
-            background-color: #2c2c2c;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus { border-color: var(--accent-color); }
-
+        /* Inputs Area */
+        .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-area input { flex-grow: 1; }
         .btn-add { background-color: var(--accent-color); }
 
-        /* Task List */
+        /* Stint List */
         ul { list-style: none; padding: 0; }
-
         li {
-            background-color: var(--card-bg);
-            margin-bottom: 15px;
-            padding: 20px;
-            border-radius: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: opacity 0.3s;
+            background: var(--card-bg); margin-bottom: 10px; padding: 15px;
+            border-radius: 10px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        li.done span { opacity: 0.5; text-decoration: line-through; }
+        .btn-start { background-color: var(--success-color); margin-right: 5px; }
+        .btn-delete { background-color: var(--danger-color); }
 
-        li.done { opacity: 0.5; text-decoration: line-through; }
-        
-        .task-actions { display: flex; gap: 8px; }
-        .btn-start { background-color: var(--success-color); padding: 8px 15px; font-size: 0.9rem; border-radius: 8px;}
-        .btn-delete { background-color: var(--danger-color); padding: 8px 12px; font-size: 0.9rem; border-radius: 8px;}
+        /* --- TELEMETRIE TABELLE (Das hat gefehlt) --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th { text-align: left; color: #888; padding-bottom: 10px; border-bottom: 1px solid #444; }
+        td { padding: 10px 0; border-bottom: 1px solid #333; }
+        .time-col { color: var(--success-color); font-family: monospace; font-weight: bold; }
+        .btn-clear { background-color: transparent; border: 1px solid #444; color: #888; width: 100%; margin-top: 10px;}
+        .btn-clear:hover { background-color: #333; }
 
         /* --- OVERLAY (Fokus Modus) --- */
         #sector-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 18, 18, 0.98);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(18, 18, 18, 0.98); display: none;
+            flex-direction: column; justify-content: center; align-items: center;
             z-index: 1000;
-            padding: 20px;
         }
-
-        #sector-overlay h2 { color: var(--success-color); font-size: 2.5rem; margin-bottom: 10px; text-align: center;}
         .timer { font-size: 5rem; font-weight: 700; margin: 20px 0; font-variant-numeric: tabular-nums; }
-        .task-name { font-size: 1.5rem; color: #aaa; margin-bottom: 40px; text-align: center;}
-
-        .radio-wrapper { width: 100%; max-width: 400px; margin-bottom: 40px; }
-        .radio-label { display: block; text-align: center; color: var(--accent-color); margin-bottom: 10px; font-weight: bold;}
-
-        /* Safety Car Mode Styles */
-        body.safety-car-active { border: 8px solid var(--warning-color); }
-        body.safety-car-active .btn-add, 
-        body.safety-car-active .btn-start { opacity: 0.2; pointer-events: none; }
+        .task-display { font-size: 1.5rem; color: #aaa; margin-bottom: 30px; text-align: center; }
         
-        /* Parc Ferme Styles */
+        .radio-box { margin-bottom: 40px; text-align: center; width: 90%; max-width: 400px; }
+        .radio-box span { color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 10px; }
+
+        /* Modes Styling */
+        body.safety-car-active { border: 5px solid var(--warning-color); }
+        body.safety-car-active .btn-add, body.safety-car-active .btn-start { opacity: 0.2; pointer-events: none; }
+        
         body.parc-ferme-active { opacity: 0.8; }
         body.parc-ferme-active .input-area { display: none; }
+        body.parc-ferme-active .btn-start { display: none; }
     </style>
 </head>
 <body>
@@ -180,7 +122,7 @@
     <div class="card">
         <h3>🌡️ Warm-up Procedure</h3>
         <div class="checklist">
-            <label><input type="checkbox"> System Check (Kaffee)</label>
+            <label><input type="checkbox"> System Check (Kaffee/Wasser)</label>
             <label><input type="checkbox"> Wetterbericht (Kalender)</label>
             <label><input type="checkbox"> Reifen anwärmen (Mails)</label>
         </div>
@@ -191,53 +133,80 @@
         <button class="btn-ferme" onclick="toggleParcFerme()">🏁 Parc Fermé</button>
     </div>
 
-    <div class="input-area" id="input-area">
+    <div class="input-area">
         <input type="text" id="new-stint-input" placeholder="Neuen Stint planen...">
         <button class="btn-add" onclick="addStint()">Box</button>
     </div>
 
-    <h3 style="color: #666; margin-left: 10px; text-transform: uppercase; font-size: 0.8rem;">Aktuelle Stints</h3>
-    <ul id="stint-list">
-        </ul>
+    <h3 style="color:#666; font-size:0.8rem; text-transform:uppercase; margin-left:5px;">Aktuelle Stints</h3>
+    <ul id="stint-list"></ul>
+
+    <div class="card" style="margin-top: 30px;">
+        <h3>📊 Telemetrie (Renn-Ergebnisse)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stint</th>
+                    <th>Datum</th>
+                    <th style="text-align:right;">Zeit</th>
+                </tr>
+            </thead>
+            <tbody id="telemetry-body">
+                </tbody>
+        </table>
+        <button class="btn-clear" onclick="clearTelemetry()">Saison-Daten löschen</button>
+    </div>
 </div>
 
 <div id="sector-overlay">
-    <h2>Sektor läuft</h2>
-    <div class="timer" id="timer">00:00</div>
-    <div class="task-name" id="current-focus-task">Task Name</div>
+    <h2 style="color:var(--success-color);">SEKTOR LÄUFT</h2>
+    <div class="timer" id="timer">00:00:00</div>
+    <div class="task-display" id="current-focus-task">Task Name</div>
 
-    <div class="radio-wrapper">
-        <span class="radio-label">📻 Boxenfunk (Idee notieren)</span>
+    <div class="radio-box">
+        <span>📻 Boxenfunk (Idee notieren)</span>
         <div class="input-area" style="margin-bottom:0;">
             <input type="text" id="radio-input" placeholder="...">
             <button class="btn-add" onclick="sendRadio()">Senden</button>
         </div>
     </div>
 
-    <button class="btn-delete" style="background-color: #e74c3c; padding: 15px 30px; font-size: 1.2rem;" onclick="stopSector()">BOX BOX (Beenden)</button>
+    <button class="btn-delete" style="padding:15px 30px; font-size:1.2rem;" onclick="stopSector()">BOX BOX (Beenden)</button>
 </div>
 
 <script>
-    // Daten laden
+    // --- DATEN LADEN ---
     let stints = JSON.parse(localStorage.getItem('raceStints')) || [];
+    let telemetry = JSON.parse(localStorage.getItem('raceTelemetry')) || [];
+    
+    // Variablen für Timer und Status
+    let timerInterval;
+    let startTime;
+    let currentTaskName = "";
     let isSafetyCar = false;
     let isParcFerme = false;
-    let timerInterval;
-    let seconds = 0;
 
-    window.onload = renderStints;
+    // Beim Start alles anzeigen
+    window.onload = function() {
+        renderStints();
+        renderTelemetry();
+    };
 
+    // --- STINT LOGIK (TO-DO) ---
     function addStint() {
         const input = document.getElementById('new-stint-input');
-        const text = input.value;
-        if (!text) return;
-        
-        stints.push({ text: text, done: false });
-        saveAndRender();
+        if(!input.value) return;
+        stints.push({ text: input.value, done: false });
+        saveStints();
         input.value = '';
     }
 
-    function saveAndRender() {
+    function deleteStint(index) {
+        stints.splice(index, 1);
+        saveStints();
+    }
+
+    function saveStints() {
         localStorage.setItem('raceStints', JSON.stringify(stints));
         renderStints();
     }
@@ -247,11 +216,11 @@
         list.innerHTML = '';
         stints.forEach((stint, index) => {
             const li = document.createElement('li');
-            if(stint.done) li.className = 'done';
+            if(stint.done) li.classList.add('done');
             
             li.innerHTML = `
                 <span>${stint.text}</span>
-                <div class="task-actions">
+                <div>
                     ${!stint.done ? `<button class="btn-start" onclick="startSector('${stint.text}')">Start</button>` : ''}
                     <button class="btn-delete" onclick="deleteStint(${index})">X</button>
                 </div>
@@ -260,23 +229,95 @@
         });
     }
 
-    function deleteStint(index) {
-        stints.splice(index, 1);
-        saveAndRender();
+    // --- TIMER & SEKTOR LOGIK ---
+    function startSector(taskName) {
+        if(isSafetyCar) return;
+        currentTaskName = taskName;
+        document.getElementById('sector-overlay').style.display = 'flex';
+        document.getElementById('current-focus-task').innerText = taskName;
+        
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimerDisplay, 1000);
     }
 
-    // --- MODI ---
+    function updateTimerDisplay() {
+        const diff = Date.now() - startTime;
+        const date = new Date(diff);
+        const h = String(date.getUTCHours()).padStart(2, '0');
+        const m = String(date.getUTCMinutes()).padStart(2, '0');
+        const s = String(date.getUTCSeconds()).padStart(2, '0');
+        document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+    }
+
+    function stopSector() {
+        clearInterval(timerInterval);
+        const diff = Date.now() - startTime; // Zeit in Millisekunden
+        
+        // 1. Zeit speichern (Telemetrie)
+        const entry = {
+            task: currentTaskName,
+            date: new Date().toLocaleDateString('de-DE'),
+            ms: diff
+        };
+        telemetry.push(entry);
+        localStorage.setItem('raceTelemetry', JSON.stringify(telemetry));
+        
+        // 2. UI zurücksetzen
+        document.getElementById('sector-overlay').style.display = 'none';
+        renderTelemetry(); // Tabelle aktualisieren
+    }
+
+    // --- TELEMETRIE ANZEIGE ---
+    function renderTelemetry() {
+        const tbody = document.getElementById('telemetry-body');
+        tbody.innerHTML = '';
+        
+        // Neueste Einträge oben
+        telemetry.slice().reverse().forEach(entry => {
+            // Zeit formatieren
+            const dateObj = new Date(entry.ms);
+            const h = String(dateObj.getUTCHours()).padStart(2, '0');
+            const m = String(dateObj.getUTCMinutes()).padStart(2, '0');
+            const s = String(dateObj.getUTCSeconds()).padStart(2, '0');
+            const timeString = `${h}:${m}:${s}`;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${entry.task}</td>
+                <td style="font-size:0.8rem; color:#888;">${entry.date}</td>
+                <td class="time-col" style="text-align:right;">${timeString}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function clearTelemetry() {
+        if(confirm("Sicher? Alle Saison-Daten werden gelöscht!")) {
+            telemetry = [];
+            localStorage.setItem('raceTelemetry', JSON.stringify(telemetry));
+            renderTelemetry();
+        }
+    }
+
+    // --- MODI & BOXENFUNK ---
+    function sendRadio() {
+        const val = document.getElementById('radio-input').value;
+        if(val) { 
+            alert(`📝 Box hat notiert: ${val}`); 
+            document.getElementById('radio-input').value = ''; 
+        }
+    }
 
     function toggleSafetyCar() {
         isSafetyCar = !isSafetyCar;
-        const btn = document.querySelector('.btn-safety');
         document.body.classList.toggle('safety-car-active');
+        const btn = document.querySelector('.btn-safety');
         
         if (isSafetyCar) {
-            btn.innerHTML = "🏁 Restart Race";
-            alert("⚠️ SAFETY CAR! Fokus auf das Problem. Keine neuen Tasks.");
+            btn.innerText = "🏁 Restart Race";
+            alert("⚠️ SAFETY CAR! Fokus auf das Problem.");
         } else {
-            btn.innerHTML = "⚠️ Safety Car";
+            btn.innerText = "⚠️ Safety Car";
         }
     }
 
@@ -285,41 +326,11 @@
         document.body.classList.toggle('parc-ferme-active');
         const btn = document.querySelector('.btn-ferme');
         
-        if(isParcFerme) {
-            btn.innerHTML = "🔓 Open Paddock";
+        if (isParcFerme) {
+            btn.innerText = "🔓 Open Paddock";
             alert("🏁 PARC FERMÉ. Feierabend-Modus.");
         } else {
-            btn.innerHTML = "🏁 Parc Fermé";
-        }
-    }
-
-    // --- TIMER ---
-
-    function startSector(taskName) {
-        if(isSafetyCar) return;
-        document.getElementById('sector-overlay').style.display = 'flex';
-        document.getElementById('current-focus-task').innerText = taskName;
-        seconds = 0;
-        updateTimer();
-        timerInterval = setInterval(() => { seconds++; updateTimer(); }, 1000);
-    }
-
-    function stopSector() {
-        clearInterval(timerInterval);
-        document.getElementById('sector-overlay').style.display = 'none';
-    }
-
-    function updateTimer() {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        document.getElementById('timer').innerText = `${m}:${s}`;
-    }
-
-    function sendRadio() {
-        const input = document.getElementById('radio-input');
-        if(input.value) {
-            alert("📻 Box hat notiert: " + input.value);
-            input.value = '';
+            btn.innerText = "🏁 Parc Fermé";
         }
     }
 </script>
