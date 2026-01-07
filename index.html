@@ -2,517 +2,319 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Control v2.0</title>
     <style>
         :root {
-            --bg-color: #000000;
-            --card-bg: #1c1c1e;
-            --input-bg: #2c2c2e;
-            --text-main: #ffffff;
-            --text-muted: #8e8e93;
-            --accent-fs: #ff453a;
-            --accent-uni: #0a84ff;
-            --accent-free: #32d74b;
-            --nav-height: 80px;
-        }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            margin: 0; padding: 0; 
-            padding-bottom: calc(var(--nav-height) + 20px); /* Platz für Navi unten */
-            -webkit-tap-highlight-color: transparent;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --accent-green: #00ff88; /* Green Flag */
+            --accent-yellow: #ffcc00; /* Safety Car */
+            --accent-red: #ff3333; /* Red Flag/Delete */
+            --accent-blue: #3399ff; /* Info/Warmup */
+            --font-stack: 'Courier New', Courier, monospace; /* Telemetrie-Look */
         }
 
-        /* --- BOTTOM NAVIGATION --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            height: var(--nav-height);
-            background: rgba(28, 28, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid #333;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* --- Header & Status --- */
+        header {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            padding-bottom: 15px; /* Für iPhone Home Bar */
-            box-sizing: border-box;
-        }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #666; font-size: 0.7rem; font-weight: 500;
-            width: 100%; height: 100%;
-            cursor: pointer; transition: 0.2s;
-        }
-
-        .nav-item.active { color: white; }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 4px; }
-
-        /* --- CONTENT VIEWS --- */
-        #main-content { padding: 20px; max-width: 600px; margin: auto; }
-        .view-section { display: none; animation: fadeIn 0.3s ease-out; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-        h1 { font-size: 1.8rem; margin: 10px 0 20px; font-weight: 800; }
-
-        /* --- TIMER CARD --- */
-        .card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 25px;
-            text-align: center;
+            border-bottom: 2px solid var(--accent-green);
+            padding-bottom: 10px;
             margin-bottom: 20px;
         }
-        
-        #display { font-size: 3.8rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -2px; margin: 15px 0; line-height: 1; }
-        
-        /* --- INPUTS (FLAT DESIGN) --- */
-        .input-wrapper { margin-bottom: 15px; text-align: left; }
-        .input-label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: bold; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
-        
-        select, input[type="text"] { 
-            width: 100%; padding: 16px; border-radius: 12px; border: none;
-            background-color: var(--input-bg); 
-            color: white; font-size: 1rem; 
-            appearance: none; -webkit-appearance: none; /* Entfernt Glossy Style */
-            outline: none; box-shadow: none;
-        }
-        
-        /* Custom Pfeil für Select */
-        .select-wrapper { position: relative; }
-        .select-wrapper::after {
-            content: '▼'; font-size: 0.8rem; color: #666; 
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;
+
+        h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        .status-light {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
         }
 
-        /* --- BUTTONS --- */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .btn-full { grid-column: 1 / -1; }
-        
-        button { 
-            padding: 18px; border: none; border-radius: 14px; cursor: pointer; 
-            font-weight: 600; font-size: 1rem; color: white; width: 100%; 
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+        /* --- Control Panel (Top Buttons) --- */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
             transition: transform 0.1s;
         }
-        button:active { transform: scale(0.96); opacity: 0.8; }
-        
-        .btn-fs { background: var(--accent-fs); } 
-        .btn-uni { background: var(--accent-uni); } 
-        .btn-free { background: var(--accent-free); color: #000; }
-        .btn-stop { background: rgba(255, 69, 58, 0.15); color: #ff453a; border: 1px solid rgba(255, 69, 58, 0.3); }
 
-        /* --- TASKS MODULE --- */
-        .task-input-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn-add { width: auto; padding: 0 20px; background: #333; }
-        
-        .task-list { list-style: none; padding: 0; }
-        .task-item { 
-            background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 12px; 
-            display: flex; align-items: center; gap: 15px; transition: 0.2s;
+        button:active { transform: scale(0.98); }
+
+        .btn-safety { background-color: var(--accent-yellow); color: #000; }
+        .btn-ferme { background-color: #444; color: #aaa; border: 1px solid #666; }
+        .btn-action { background-color: var(--accent-green); color: #000; }
+        .btn-danger { background-color: var(--accent-red); color: white; }
+
+        /* --- Warm Up Section --- */
+        .warmup-box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-blue);
         }
-        .task-checkbox {
-            width: 24px; height: 24px; border-radius: 6px; border: 2px solid #555;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        .warmup-title { font-size: 0.9rem; color: var(--accent-blue); margin-bottom: 10px; display: block;}
+
+        /* --- Stint Input --- */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        .task-checkbox.checked { background: var(--accent-free); border-color: var(--accent-free); }
-        .task-checkbox.checked::after { content: '✓'; color: black; font-weight: bold; }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus { outline: 1px solid var(--accent-green); }
+
+        /* --- Stint List --- */
+        ul { list-style: none; padding: 0; }
         
-        .task-text { flex-grow: 1; font-size: 1rem; }
-        .task-item.done .task-text { text-decoration: line-through; color: #555; }
-        .btn-del-task { background: transparent; color: #444; width: auto; padding: 5px; }
+        li {
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+            border-left: 4px solid #444;
+        }
 
-        /* --- STATS & HISTORY --- */
-        .stat-filter { background: var(--input-bg); padding: 4px; border-radius: 10px; display: flex; margin-bottom: 20px; }
-        .stat-tab { flex: 1; text-align: center; padding: 8px; font-size: 0.85rem; color: #888; border-radius: 7px; }
-        .stat-tab.active { background: #636366; color: white; font-weight: bold; }
+        li.done { opacity: 0.5; text-decoration: line-through; border-left-color: var(--accent-green); }
 
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .dash-card { background: var(--card-bg); padding: 15px 5px; border-radius: 12px; text-align: center; }
-        .dash-label { font-size: 0.65rem; text-transform: uppercase; color: #666; font-weight: bold; display: block; margin-bottom: 4px; }
-        .dash-val { font-size: 1.1rem; font-weight: 800; color: white; }
+        /* --- FOCUS MODE OVERLAY (SEKTOR) --- */
+        #sector-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
 
-        .log-item { background: var(--card-bg); padding: 15px; margin-bottom: 8px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;}
+        #sector-overlay h2 { font-size: 2rem; color: var(--accent-green); margin-bottom: 10px; }
+        .timer-display { font-size: 4rem; font-weight: bold; margin-bottom: 30px; }
         
-        /* Bar Chart */
-        .chart-container { height: 120px; display: flex; align-items: flex-end; justify-content: space-between; padding: 10px 0; }
-        .bar-col { width: 12%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
-        .bar-stack { width: 100%; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column-reverse; background: #2c2c2e; min-height: 4px; }
-        .bar-seg { width: 100%; }
-        .bar-lbl { font-size: 0.6rem; color: #666; margin-top: 6px; }
+        .radio-box {
+            width: 80%;
+            max-width: 400px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* --- Safety Car Mode Styles --- */
+        body.safety-car-active {
+            border: 5px solid var(--accent-yellow);
+        }
+        body.safety-car-active .status-light {
+            background-color: var(--accent-yellow);
+            box-shadow: 0 0 15px var(--accent-yellow);
+            animation: blink 1s infinite;
+        }
+        body.safety-car-active input, 
+        body.safety-car-active .btn-action {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        /* --- Parc Ferme Styles --- */
+        body.parc-ferme-active .input-group { display: none; }
+        body.parc-ferme-active header { border-bottom-color: #666; }
+        body.parc-ferme-active .status-light { background-color: #666; box-shadow: none; }
 
     </style>
 </head>
 <body>
 
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchView('home')">
-            <div class="nav-icon">⏱️</div>
-            <span>Fokus</span>
-        </div>
-        <div class="nav-item" onclick="switchView('tasks')">
-            <div class="nav-icon">✅</div>
-            <span>Missionen</span>
-        </div>
-        <div class="nav-item" onclick="switchView('stats')">
-            <div class="nav-icon">📊</div>
-            <span>Analyse</span>
-        </div>
-        <div class="nav-item" onclick="switchView('log')">
-            <div class="nav-icon">📜</div>
-            <span>Verlauf</span>
-        </div>
-    </nav>
+    <header>
+        <h1>🏎️ Race Control</h1>
+        <div class="status-light" id="track-status"></div>
+    </header>
 
-    <main id="main-content">
+    <div class="warmup-box">
+        <span class="warmup-title">🌡️ WARM-UP PROCEDURE</span>
+        <label><input type="checkbox"> System Check (Kaffee/Wasser)</label><br>
+        <label><input type="checkbox"> Wetterbericht (Kalender)</label><br>
+        <label><input type="checkbox"> Reifendruck (Mails scannen)</label>
+    </div>
 
-        <section id="view-home" class="view-section active">
-            <h1>Fokus</h1>
-            
-            <div class="card">
-                <div id="statusBadge" style="color:#666; font-size:0.8rem; text-transform:uppercase; font-weight:bold; letter-spacing:1px;">BEREIT</div>
-                <div id="display">00:00:00</div>
+    <div class="control-panel">
+        <button class="btn-safety" onclick="toggleSafetyCar()">⚠️ SC (Safety Car)</button>
+        <button class="btn-ferme" onclick="toggleParcFerme()">🏁 Parc Fermé</button>
+    </div>
 
-                <div id="startControls">
-                    <div class="input-wrapper">
-                        <label class="input-label">Kategorie</label>
-                        <div class="select-wrapper">
-                            <select id="fsTypeSelect">
-                                <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
-                                <option value="Werkstatt">🔧 Werkstatt</option>
-                                <option value="Sitzung">🗣️ Sitzung</option>
-                                <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
-                                <option value="Orga">📧 Orga / Emails</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="input-wrapper">
-                        <label class="input-label">Notiz</label>
-                        <input type="text" id="noteInput" placeholder="Details...">
-                    </div>
+    <div class="input-group" id="stint-input-area">
+        <input type="text" id="new-stint-input" placeholder="Neuen Stint planen...">
+        <button class="btn-action" onclick="addStint()">Box bestätigen</button>
+    </div>
 
-                    <div class="btn-grid">
-                        <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
-                        <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
-                        <button class="btn-free btn-full" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
-                    </div>
-                </div>
+    <h3>Aktuelle Stints</h3>
+    <ul id="stint-list">
+        </ul>
 
-                <div id="stopControls" style="display:none;">
-                    <div style="margin-bottom:20px; color:#666; font-size:0.9rem;">Bleib dran!</div>
-                    <button class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-tasks" class="view-section">
-            <h1>Missionen</h1>
-            
-            <div class="task-input-row">
-                <input type="text" id="newTaskInput" placeholder="Neue Mission...">
-                <button class="btn-add" onclick="addTask()">＋</button>
-            </div>
-
-            <ul id="taskList" class="task-list">
-                <li style="text-align:center; color:#666; padding:20px;">Lade Missionen...</li>
-            </ul>
-        </section>
-
-        <section id="view-stats" class="view-section">
-            <h1>Analyse</h1>
-            
-            <div class="stat-filter">
-                <div class="stat-tab active" id="tabFS" onclick="setFilter('FS')">FS Team</div>
-                <div class="stat-tab" id="tabUni" onclick="setFilter('Uni')">Uni</div>
-                <div class="stat-tab" id="tabFree" onclick="setFilter('Freizeit')">Freizeit</div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <span class="dash-label">Saison 25/26</span>
-                    <span class="dash-val" id="valSeason">0h</span>
-                </div>
-                <div class="dash-card">
-                    <span class="dash-label">Jahr 2026</span>
-                    <span class="dash-val" id="valYear">0h</span>
-                </div>
-                <div class="dash-card">
-                    <span class="dash-label">Ø Monat</span>
-                    <span class="dash-val" id="valAvg">0h</span>
-                </div>
-            </div>
-
-            <div class="card" style="text-align:left;">
-                <span class="dash-label">Wochentrend</span>
-                <div id="weekChart" class="chart-container"></div>
-            </div>
-            
-            <button onclick="downloadCSV()" style="background:#2c2c2e; color:#888; font-size:0.9rem; padding:15px;">📥 Excel Export</button>
-        </section>
-
-        <section id="view-log" class="view-section">
-            <h1>Verlauf</h1>
-            <ul id="logList" class="task-list"></ul>
-        </section>
-
-    </main>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, get, child, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
-          authDomain: "zeit-97904.firebaseapp.com",
-          databaseURL: "https://zeit-97904-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "zeit-97904",
-          storageBucket: "zeit-97904.firebasestorage.app",
-          messagingSenderId: "677314069900",
-          appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    <div id="sector-overlay">
+        <h2>🟢 SEKTOR 1 LÄUFT</h2>
+        <div class="timer-display" id="timer">00:00</div>
+        <p id="current-focus-task" style="color:#aaa; font-size:1.2rem;">Task Name</p>
         
-        let localStartTime = 0;
-        let tInterval;
-        let historyData = {};
-        let currentStatFilter = "FS";
-        
-        const colors = { 'FS': '#ff453a', 'Uni': '#0a84ff', 'Freizeit': '#32d74b' };
+        <div class="radio-box">
+            <label style="color: var(--accent-blue);">📻 BOXENFUNK (Quick Note)</label>
+            <div class="input-group">
+                <input type="text" id="radio-input" placeholder="Idee an die Box funken...">
+                <button class="btn-action" onclick="sendRadio()">Senden</button>
+            </div>
+        </div>
 
-        // --- NAVIGATION ---
-        window.switchView = (viewId) => {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-'+viewId).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Highlight logic
-            const icons = {'home':0, 'tasks':1, 'stats':2, 'log':3};
-            document.querySelectorAll('.nav-item')[icons[viewId]].classList.add('active');
+        <button class="btn-danger" style="margin-top: 50px;" onclick="stopSector()">BOX BOX (Sektor beenden)</button>
+    </div>
+
+    <script>
+        // --- State ---
+        let stints = [];
+        let isSafetyCar = false;
+        let isParcFerme = false;
+        let timerInterval;
+        let seconds = 0;
+
+        // --- Core Functions ---
+
+        function addStint() {
+            const input = document.getElementById('new-stint-input');
+            const text = input.value;
+            if (text === '') return;
+
+            stints.push({ text: text, done: false });
+            input.value = '';
+            renderStints();
         }
 
-        // --- FIREBASE SYNC: STATUS & HISTORY ---
-        onValue(ref(db, 'status'), (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.running) {
-                localStartTime = data.startTime;
-                if(!tInterval) tInterval = setInterval(updateTimer, 1000);
-                
-                document.getElementById('startControls').style.display = 'none';
-                document.getElementById('stopControls').style.display = 'block';
-                document.getElementById('statusBadge').innerText = (data.category + " • " + (data.subCategory||"")).toUpperCase();
-                document.getElementById('statusBadge').style.color = colors[data.category];
-                if(data.note) document.getElementById('noteInput').value = data.note;
-            } else {
-                if(tInterval) { clearInterval(tInterval); tInterval = null; }
-                document.getElementById('startControls').style.display = 'block';
-                document.getElementById('stopControls').style.display = 'none';
-                document.getElementById('statusBadge').innerText = "BEREIT";
-                document.getElementById('statusBadge').style.color = "#666";
-                document.getElementById('display').innerText = "00:00:00";
-            }
-        });
+        function renderStints() {
+            const list = document.getElementById('stint-list');
+            list.innerHTML = '';
 
-        onValue(ref(db, 'history'), (snap) => {
-            historyData = snap.val() || {};
-            updateStats();
-        });
-
-        // --- FIREBASE SYNC: TASKS ---
-        onValue(ref(db, 'tasks'), (snap) => {
-            const tasks = snap.val() || {};
-            const list = document.getElementById('taskList');
-            list.innerHTML = "";
-            
-            // Sortierung: Erst offene, dann erledigte
-            const sorted = Object.entries(tasks).sort(([,a],[,b]) => a.done - b.done || b.created - a.created);
-            
-            if(sorted.length === 0) list.innerHTML = '<li style="text-align:center; color:#444; margin-top:30px;">Keine offenen Missionen</li>';
-
-            sorted.forEach(([key, t]) => {
+            stints.forEach((stint, index) => {
                 const li = document.createElement('li');
-                li.className = `task-item ${t.done ? 'done' : ''}`;
+                li.className = stint.done ? 'done' : '';
                 li.innerHTML = `
-                    <div class="task-checkbox ${t.done ? 'checked' : ''}" onclick="toggleTask('${key}', ${!t.done})"></div>
-                    <span class="task-text">${t.text}</span>
-                    <button class="btn-del-task" onclick="deleteTask('${key}')">×</button>
+                    <span>${stint.text}</span>
+                    <div>
+                        ${!stint.done ? `<button class="btn-action" onclick="startSector('${stint.text}')">Start Sektor</button>` : ''}
+                        <button class="btn-danger" onclick="deleteStint(${index})">X</button>
+                    </div>
                 `;
                 list.appendChild(li);
             });
-        });
-
-        // --- ACTIONS ---
-        window.startWork = (cat) => {
-            const now = Date.now();
-            const note = document.getElementById('noteInput').value;
-            let sub = (cat === 'FS') ? document.getElementById('fsTypeSelect').value : "";
-            set(ref(db, 'status'), { running: true, startTime: now, category: cat, subCategory: sub, note: note });
         }
 
-        window.stopWork = () => {
-            get(child(ref(db), 'status')).then((snap) => {
-                const s = snap.val();
-                if(s && s.running) {
-                    const now = Date.now();
-                    const finalNote = document.getElementById('noteInput').value;
-                    push(ref(db, 'history'), {
-                        category: s.category, subCategory: s.subCategory,
-                        start: s.startTime, end: now, duration: now - s.startTime,
-                        note: finalNote
-                    });
-                    set(ref(db, 'status'), { running: false });
-                    document.getElementById('noteInput').value = ""; // Clear note
-                }
-            });
+        function deleteStint(index) {
+            stints.splice(index, 1);
+            renderStints();
         }
 
-        window.addTask = () => {
-            const input = document.getElementById('newTaskInput');
-            if(input.value.trim() === "") return;
-            push(ref(db, 'tasks'), {
-                text: input.value,
-                done: false,
-                created: Date.now()
-            });
-            input.value = "";
+        // --- Modes ---
+
+        function toggleSafetyCar() {
+            isSafetyCar = !isSafetyCar;
+            const body = document.body;
+            const btn = document.querySelector('.btn-safety');
+            
+            if (isSafetyCar) {
+                body.classList.add('safety-car-active');
+                btn.innerText = "SC In This Lap (Beenden)";
+                alert("⚠️ SAFETY CAR DEPLOYED! Überholverbot. Fokus auf das Problem.");
+            } else {
+                body.classList.remove('safety-car-active');
+                btn.innerText = "⚠️ SC (Safety Car)";
+                alert("🟩 GREEN FLAG! Race resumed.");
+            }
         }
 
-        window.toggleTask = (key, newState) => {
-            update(ref(db, 'tasks/' + key), { done: newState });
+        function toggleParcFerme() {
+            isParcFerme = !isParcFerme;
+            document.body.classList.toggle('parc-ferme-active');
+            const btn = document.querySelector('.btn-ferme');
+            
+            if (isParcFerme) {
+                btn.innerText = "🔓 Open Paddock";
+                alert("🏁 PARC FERMÉ. Motor aus. Keine Änderungen mehr am Setup.");
+            } else {
+                btn.innerText = "🏁 Parc Fermé";
+            }
         }
 
-        window.deleteTask = (key) => {
-            if(confirm("Löschen?")) remove(ref(db, 'tasks/' + key));
-        }
+        // --- Sektor / Fokus Logic ---
 
-        window.deleteLog = (key) => {
-            if(confirm("Eintrag löschen?")) remove(ref(db, 'history/' + key));
-        }
+        function startSector(taskName) {
+            if(isSafetyCar) return; // Kein Start bei Safety Car
 
-        window.setFilter = (f) => {
-            currentStatFilter = f;
-            document.querySelectorAll('.stat-tab').forEach(e => e.classList.remove('active'));
-            if(f==='FS') document.getElementById('tabFS').classList.add('active');
-            if(f==='Uni') document.getElementById('tabUni').classList.add('active');
-            if(f==='Freizeit') document.getElementById('tabFree').classList.add('active');
-            updateStats();
+            document.getElementById('sector-overlay').style.display = 'flex';
+            document.getElementById('current-focus-task').innerText = taskName;
+            seconds = 0;
+            updateTimer();
+            timerInterval = setInterval(() => {
+                seconds++;
+                updateTimer();
+            }, 1000);
         }
 
         function updateTimer() {
-            if(!localStartTime) return;
-            let diff = Date.now() - localStartTime;
-            let h = Math.floor(diff/3600000);
-            let m = Math.floor((diff%3600000)/60000);
-            let s = Math.floor((diff%60000)/1000);
-            document.getElementById('display').innerText = 
-                (h<10?"0"+h:h) + ":" + (m<10?"0"+m:m) + ":" + (s<10?"0"+s:s);
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `${m}:${s}`;
         }
 
-        function getSeason(ts) {
-            let d = new Date(ts);
-            let y = d.getFullYear();
-            // Saison Start Sept (Monat 8)
-            if(d.getMonth() >= 8) return `${(y+"").substr(2)}/${(y+1+"").substr(2)}`;
-            return `${(y-1+"").substr(2)}/${(y+"").substr(2)}`;
+        function stopSector() {
+            clearInterval(timerInterval);
+            document.getElementById('sector-overlay').style.display = 'none';
         }
 
-        function updateStats() {
-            const list = document.getElementById('logList');
-            list.innerHTML = "";
-            const entries = Object.entries(historyData).sort(([,a],[,b]) => b.start - a.start);
-            
-            let stats = { season: 0, year: 0 };
-            let daily = {};
-            const now = new Date();
-            const currSeason = getSeason(now.getTime());
-            const currYear = now.getFullYear();
-
-            // Season Duration Calc (for Avg)
-            let startYear = parseInt("20"+currSeason.split('/')[0]);
-            let monthsPassed = (now.getFullYear() - startYear)*12 + (now.getMonth() - 8);
-            if(monthsPassed < 1) monthsPassed = 1; else monthsPassed += 1;
-
-            entries.forEach(([key, e]) => {
-                // Log List (Last 30)
-                if(list.children.length < 30) {
-                    let li = document.createElement('li');
-                    li.className = 'log-item';
-                    li.innerHTML = `
-                        <div>
-                            <div style="font-weight:bold; color:${colors[e.category]||'white'}">${e.category} <span style="color:#666; font-weight:normal">• ${e.subCategory||'-'}</span></div>
-                            <div style="color:#666; font-size:0.8rem">${new Date(e.start).toLocaleDateString()} • ${e.note||''}</div>
-                        </div>
-                        <div style="text-align:right">
-                            <div style="font-weight:bold">${(e.duration/3600000).toFixed(1)}h</div>
-                            <button onclick="deleteLog('${key}')" style="background:none; padding:0; width:auto; color:#444">×</button>
-                        </div>
-                    `;
-                    list.appendChild(li);
-                }
-
-                // Stats Calc
-                if(e.category === currentStatFilter) {
-                    if(getSeason(e.start) === currSeason) stats.season += e.duration;
-                    if(new Date(e.start).getFullYear() === currYear) stats.year += e.duration;
-                }
-                
-                // Chart Data
-                let dKey = new Date(e.start).toLocaleDateString();
-                if(!daily[dKey]) daily[dKey] = {FS:0, Uni:0, Freizeit:0};
-                let c = e.category || 'FS';
-                if(daily[dKey][c] !== undefined) daily[dKey][c] += e.duration;
-            });
-
-            // UI Update Stats
-            document.getElementById('valSeason').innerText = Math.floor(stats.season/3600000) + "h";
-            document.getElementById('valYear').innerText = Math.floor(stats.year/3600000) + "h";
-            document.getElementById('valAvg').innerText = (stats.season / monthsPassed / 3600000).toFixed(1) + "h";
-
-            // Chart Render
-            const chart = document.getElementById('weekChart');
-            chart.innerHTML = "";
-            const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-            for(let i=6; i>=0; i--){
-                let d = new Date(); d.setDate(d.getDate()-i);
-                let dStr = d.toLocaleDateString();
-                let dayData = daily[dStr] || {FS:0, Uni:0, Freizeit:0};
-                let total = dayData.FS + dayData.Uni + dayData.Freizeit;
-                
-                let hPct = Math.min((total / (12*3600000))*100, 100); // 12h max scale
-                
-                let pFS = total ? (dayData.FS/total)*100 : 0;
-                let pUni = total ? (dayData.Uni/total)*100 : 0;
-                let pFree = total ? (dayData.Freizeit/total)*100 : 0;
-
-                chart.innerHTML += `
-                    <div class="bar-col">
-                        <div class="bar-stack" style="height:${hPct}%">
-                            <div class="bar-seg" style="background:${colors.FS}; height:${pFS}%"></div>
-                            <div class="bar-seg" style="background:${colors.Uni}; height:${pUni}%"></div>
-                            <div class="bar-seg" style="background:${colors.Freizeit}; height:${pFree}%"></div>
-                        </div>
-                        <span class="bar-lbl">${days[d.getDay()]}</span>
-                    </div>
-                `;
+        function sendRadio() {
+            const input = document.getElementById('radio-input');
+            const msg = input.value;
+            if(msg) {
+                alert(`📻 Kopie, Box hat notiert: "${msg}"`);
+                input.value = '';
+                // Hier könnte man die Notiz in eine separate Liste speichern
             }
         }
-        
-        window.downloadCSV = () => {
-             // CSV logic same as before...
-             let csv = "Datum,Kategorie,Dauer\n";
-             // ... simplified for brevity, works like previous version
-             const link = document.createElement("a");
-             link.href = "data:text/csv;charset=utf-8,Demo"; 
-             link.download = "export.csv";
-             link.click();
-        }
-
     </script>
 </body>
 </html>
