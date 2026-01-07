@@ -21,115 +21,65 @@
         
         .app-layout { display: flex; min-height: 100vh; }
 
-        /* --- SIDEBAR (PIT WALL) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
-            width: 250px;
-            background: #111;
-            border-right: 2px solid #333;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            position: fixed;
-            height: 100%;
-            z-index: 100;
-            transition: transform 0.3s ease;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            width: 250px; background: #111; border-right: 2px solid #333;
+            display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100%; z-index: 100;
+            transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
         }
         .sidebar-title { 
             font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 30px; padding-left: 10px; 
-            text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid #ff3b30; padding-left: 15px;
-            font-style: italic;
+            text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid #ff3b30; padding-left: 15px; font-style: italic;
         }
         .nav-item {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.2s;
-            cursor: pointer;
-            border: 1px solid transparent;
+            padding: 12px 15px; margin-bottom: 8px; border-radius: 4px; color: #666; text-decoration: none;
+            font-size: 0.85rem; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+            transition: 0.2s; cursor: pointer; border: 1px solid transparent;
         }
         .nav-item:hover { background: #222; color: #fff; border-color: #444; }
         .nav-item.active { background: #222; color: #ff3b30; border-color: #ff3b30; }
         
         /* --- MAIN CONTENT --- */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .view-container {
-            width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px;
-            display: none; 
-        }
+        .main-content { flex: 1; margin-left: 250px; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
+        .view-container { width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px; display: none; }
         .view-container.active-view { display: block; }
 
         .card-box { 
-            background: #161616; 
-            padding: 25px; 
-            border-radius: 8px; 
-            border: 1px solid #333;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-            margin-bottom: 20px; 
-            position: relative;
+            background: #161616; padding: 25px; border-radius: 8px; border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin-bottom: 20px; position: relative;
         }
-        .card-box::before { content: ''; position: absolute; top: 10px; left: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
-        .card-box::after { content: ''; position: absolute; top: 10px; right: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
+        .card-box::before, .card-box::after { content: ''; position: absolute; top: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
+        .card-box::before { left: 10px; } .card-box::after { right: 10px; }
 
         .menu-toggle {
-            display: none;
-            position: fixed; top: 15px; left: 15px; z-index: 101;
-            background: #222; border: 1px solid #ff3b30; color: #fff;
-            padding: 10px; border-radius: 4px; cursor: pointer; font-size: 1.2rem;
+            display: none; position: fixed; top: 15px; left: 15px; z-index: 101;
+            background: #222; border: 1px solid #ff3b30; color: #fff; padding: 10px; border-radius: 4px; cursor: pointer; font-size: 1.2rem;
         }
 
-        /* --- TYPOGRAPHY --- */
         h1 { margin: 0; font-size: 1.6rem; color: #fff; margin-bottom: 5px; text-transform: uppercase; font-style: italic; letter-spacing: 1px; font-weight: 900;}
         p.subtitle { color: #666; margin-bottom: 25px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 2px;}
         
         #display { 
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 3.8em; 
-            margin: 15px 0 25px 0; 
-            font-weight: 700; 
-            color: #fff; 
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            letter-spacing: -2px;
+            font-family: 'Courier New', Courier, monospace; font-size: 3.8em; margin: 15px 0 25px 0; 
+            font-weight: 700; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); letter-spacing: -2px;
         }
         
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-label { font-size: 0.7em; color: #ff3b30; margin-bottom: 5px; display: block; margin-left: 2px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;}
         
-        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { 
-            width: 100%; padding: 15px; border-radius: 6px; border: 1px solid #333; 
-            background: #000; color: #0a84ff; 
-            font-family: 'Courier New', monospace; font-weight: bold;
-            font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; 
-            transition: 0.3s;
+        input, select { 
+            width: 100%; padding: 15px; border-radius: 6px; border: 1px solid #333; background: #000; color: #0a84ff; 
+            font-family: 'Courier New', monospace; font-weight: bold; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; transition: 0.3s;
         }
-        #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; box-shadow: 0 0 10px rgba(10, 132, 255, 0.2); }
-        #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ff3b30%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); }
+        input:focus, select:focus { border-color: #0a84ff; box-shadow: 0 0 10px rgba(10, 132, 255, 0.2); }
+        #fsTypeSelect, #modalCat { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ff3b30%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px center; background-size: 12px; }
         
         .status-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 0.75em; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; background: #222; color: #666; letter-spacing: 1px; border: 1px solid #333;}
         
-        /* BUTTONS */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
         button { 
-            padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; 
-            text-transform: uppercase; letter-spacing: 0.5px;
-            transition: transform 0.1s, filter 0.2s; 
-            display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.8rem; color: white; width: 100%;
+            padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            transition: transform 0.1s, filter 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.8rem; color: white; width: 100%;
             border-bottom: 3px solid rgba(0,0,0,0.3);
         }
         button:active { transform: translateY(2px); border-bottom-width: 0; }
@@ -138,13 +88,10 @@
         .btn-uni { background: linear-gradient(180deg, #0a84ff, #0056b3); } 
         .btn-free { background: linear-gradient(180deg, #30d158, #1da33d); }
         .btn-sleep-action { background: linear-gradient(180deg, #bf5af2, #8e44ad); margin-top: 10px;}
-        
-        .btn-stop { 
-            background: repeating-linear-gradient(45deg, #2c2c2e, #2c2c2e 10px, #3a3a3c 10px, #3a3a3c 20px);
-            border: 2px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;
-        }
-        
-        /* Stats Styles */
+        .btn-stop { background: repeating-linear-gradient(45deg, #2c2c2e, #2c2c2e 10px, #3a3a3c 10px, #3a3a3c 20px); border: 2px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem; }
+        .btn-add-event { background: #222; border: 1px dashed #666; color: #888; margin-top: 15px; }
+        .btn-add-event:hover { background: #333; color: #fff; border-color: #fff; }
+
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
         .stat-tab { background: #111; border: 1px solid #333; color: #666; padding: 6px 15px; border-radius: 4px; font-size: 0.75em; cursor: pointer; margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
         .stat-tab.active { background: #333; color: white; border-color: #888; }
@@ -166,20 +113,16 @@
         .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .btn-export { background: transparent; border: 1px solid #444; color: #666; padding: 10px; font-size: 0.75em; margin-top: 30px; width: auto; display: inline-block; border-radius: 4px; text-transform: uppercase; font-weight: bold;}
-        .btn-export:hover { border-color: #fff; color: #fff;}
-
         .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
         .log-list li { padding: 10px 0; border-bottom: 1px dashed #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
         .btn-delete { background: none; border: none; color: #444; font-size: 1.2em; padding: 5px; cursor: pointer;}
-        .btn-delete:hover { color: #ff3b30; }
         .log-note { display: block; color: #666; font-style: italic; font-size: 0.85em; }
         .sub-tag { display: inline-block; font-size: 0.7em; background: #222; padding: 2px 6px; border-radius: 2px; color: #ccc; margin-left: 5px; vertical-align: middle; border: 1px solid #444;}
 
-        /* --- CALENDAR STYLES (NEW) --- */
+        /* --- CALENDAR STYLES --- */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .cal-btn { background: #222; border: 1px solid #444; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .cal-title { font-size: 1.1em; font-weight: 900; text-transform: uppercase; color: #fff; }
-        
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
         .cal-head-day { text-align: center; font-size: 0.6em; color: #666; font-weight: bold; text-transform: uppercase; padding-bottom: 5px;}
         
@@ -197,13 +140,26 @@
         
         .cal-dots { display: flex; gap: 2px; margin-top: 3px; height: 3px; width: 80%; justify-content: center;}
         .cal-dot { width: 100%; height: 100%; border-radius: 1px; opacity: 0.8; }
+        
+        /* Event Marker (Triangle top right) */
+        .cal-event-mark {
+            position: absolute; top: 2px; right: 2px; width: 0; height: 0; 
+            border-left: 6px solid transparent; border-top: 6px solid #fff;
+        }
 
         .detail-box { background: #111; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-top: 20px; display: none; }
         .detail-box.show { display: block; animation: fadeIn 0.3s; }
         .detail-title { font-size: 0.8em; font-weight: 900; text-transform: uppercase; color: #666; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; justify-content: space-between;}
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- MODAL (POPUP) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal { background: #161616; border: 1px solid #333; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .modal h2 { font-size: 1.2rem; text-transform: uppercase; font-style: italic; margin-top: 0; color: #fff; }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); width: 250px; }
             .sidebar.open { transform: translateX(0); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
@@ -214,21 +170,41 @@
 </head>
 <body>
 
+<div class="modal-overlay" id="eventModal">
+    <div class="modal">
+        <h2>New Schedule Entry</h2>
+        <div class="input-group">
+            <span class="input-label">Title / Event</span>
+            <input type="text" id="modalTitle" placeholder="Meeting, Deadline, Race...">
+        </div>
+        <div class="input-group">
+            <span class="input-label">Category</span>
+            <select id="modalCat">
+                <option value="FS">🏎️ FS Team</option>
+                <option value="Uni">🎓 Uni</option>
+                <option value="Freizeit">🏖️ Freizeit</option>
+                <option value="Sonstiges">⚪ Sonstiges</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-label">Time (Optional)</span>
+            <input type="time" id="modalTime">
+        </div>
+        <div class="btn-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:0;">
+            <button onclick="closeModal()" style="background:#333;">Cancel</button>
+            <button onclick="saveEvent()" class="btn-uni">Save Entry</button>
+        </div>
+    </div>
+</div>
+
 <button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
 <div class="app-layout">
     <div class="sidebar" id="sidebar">
         <div class="sidebar-title">🏁 Race Control</div>
-        
-        <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')">
-            <span>🏠</span> Dashboard
-        </div>
-        <div class="nav-item" id="nav-tracker" onclick="showView('tracker')">
-            <span>⏱️</span> Telemetry
-        </div>
-        <div class="nav-item" id="nav-calendar" onclick="showView('calendar')">
-            <span>📅</span> Calendar
-        </div>
+        <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')"><span>🏠</span> Dashboard</div>
+        <div class="nav-item" id="nav-tracker" onclick="showView('tracker')"><span>⏱️</span> Telemetry</div>
+        <div class="nav-item" id="nav-calendar" onclick="showView('calendar')"><span>📅</span> Schedule</div>
     </div>
 
     <div class="main-content">
@@ -236,20 +212,17 @@
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
                 <h1>Overview</h1>
-                <p class="subtitle">Season 25/26 • v7.6</p>
-
+                <p class="subtitle">Season 25/26 • v7.7</p>
                 <p class="input-label" style="text-align:center; margin-bottom:10px;">Quick Launch</p>
                 <div class="btn-grid start-buttons-container">
                     <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
                     <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
                     <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
                 </div>
-
                 <div class="chart-container">
                     <span class="dash-label" style="margin-bottom:15px">Weekly Pace</span>
                     <div class="bar-chart" id="weekChartDash"></div>
                 </div>
-                
                 <div style="margin-top:20px; font-size:0.7em; color:#444; text-transform:uppercase;">
                     Career Total: <span id="totalHours" style="color:#fff; font-weight:bold; font-family:'Courier New'">0</span>h
                 </div>
@@ -261,7 +234,6 @@
                 <h1>Cockpit</h1>
                 <div id="statusBadge" class="status-badge">Box Box</div>
                 <div id="display">00:00:00</div>
-                
                 <div id="inputArea">
                     <div class="input-group">
                         <span class="input-label">1. Sector Category</span>
@@ -283,9 +255,7 @@
                         <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
                     </div>
                 </div>
-
                 <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ BOX BOX (STOP)</button>
-
                 <div class="sleep-section">
                     <span class="input-label" style="margin-bottom:10px">😴 Driver Rest</span>
                     <div class="sleep-grid">
@@ -294,27 +264,16 @@
                     </div>
                     <button class="btn-sleep-action" onclick="addSleep()">💾 Confirm Rest</button>
                 </div>
-
                 <div class="stat-filter">
                     <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
                     <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
                     <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
                     <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Sleep</div>
                 </div>
-
                 <div class="dashboard-grid">
-                    <div class="dash-card">
-                        <span class="dash-label">Season <span id="lblSeason">25/26</span></span>
-                        <span class="dash-val" id="valSeason">0h</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-label">Year <span id="lblYear">2026</span></span>
-                        <span class="dash-val" id="valYear">0h</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-label">Avg Pace</span>
-                        <span class="dash-val" id="valAvg">0h</span>
-                    </div>
+                    <div class="dash-card"><span class="dash-label">Season <span id="lblSeason">25/26</span></span><span class="dash-val" id="valSeason">0h</span></div>
+                    <div class="dash-card"><span class="dash-label">Year <span id="lblYear">2026</span></span><span class="dash-val" id="valYear">0h</span></div>
+                    <div class="dash-card"><span class="dash-label">Avg Pace</span><span class="dash-val" id="valAvg">0h</span></div>
                 </div>
                 <button class="btn-export" onclick="downloadCSV()">📥 Export Telemetry</button>
                 <ul id="logList" class="log-list"></ul>
@@ -323,25 +282,24 @@
 
         <div id="view-calendar" class="view-container">
             <div class="card-box">
-                <h1>Race Calendar</h1>
-                
+                <h1>Race Schedule</h1>
                 <div class="cal-header">
                     <button class="cal-btn" onclick="changeMonth(-1)">❮</button>
                     <span class="cal-title" id="calTitle">Loading...</span>
                     <button class="cal-btn" onclick="changeMonth(1)">❯</button>
                 </div>
-                
-                <div class="cal-grid" id="calGrid">
-                    </div>
+                <div class="cal-grid" id="calGrid"></div>
 
                 <div id="calDetail" class="detail-box">
                     <div class="detail-title">
                         <span id="detailDate">Date</span>
-                        <span id="detailTotal">0h 0m</span>
+                        <span id="detailTotal">Strategy & Data</span>
                     </div>
-                    <ul id="detailList" class="log-list" style="margin-top:10px; border-top:none;"></ul>
+                    <div id="eventListArea" style="text-align:left; margin-bottom:15px;"></div>
+                    <ul id="detailList" class="log-list" style="margin-top:0; border-top:none;"></ul>
+                    
+                    <button class="btn-add-event" onclick="openModal()">➕ Add Event / Termin</button>
                 </div>
-
             </div>
         </div>
 
@@ -368,13 +326,14 @@
     let tInterval;
     let localStartTime = 0;
     let historyData = {};
+    let eventData = {}; // NEW: Speicher für Events
     let calculatedStats = {}; 
     let currentStatView = "FS"; 
-    const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2' };
-    const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf' };
+    const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2', 'Sonstiges': '#888' };
+    const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf', 'Sonstiges': 'Event' };
     
-    // Calendar Vars
-    let currentCalDate = new Date(); // Tracks the month currently being viewed
+    let currentCalDate = new Date();
+    let selectedDateStr = ""; // Tracks currently clicked date
 
     document.getElementById('sleepDate').valueAsDate = new Date();
 
@@ -384,12 +343,40 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('nav-' + viewName).classList.add('active');
         document.getElementById('sidebar').classList.remove('open');
-
-        // Wenn Kalender geöffnet wird, render
         if(viewName === 'calendar') renderCalendar();
     }
 
     window.toggleMenu = function() { document.getElementById('sidebar').classList.toggle('open'); }
+
+    // --- EVENT LOGIC (NEW) ---
+    window.openModal = function() {
+        if(!selectedDateStr) return alert("Please select a date first.");
+        document.getElementById('eventModal').style.display = 'flex';
+        document.getElementById('modalTitle').focus();
+    }
+    window.closeModal = function() {
+        document.getElementById('eventModal').style.display = 'none';
+        document.getElementById('modalTitle').value = "";
+        document.getElementById('modalTime').value = "";
+    }
+    window.saveEvent = function() {
+        const title = document.getElementById('modalTitle').value;
+        const cat = document.getElementById('modalCat').value;
+        const time = document.getElementById('modalTime').value;
+        
+        if(!title) return alert("Title required");
+        
+        push(ref(db, 'events'), {
+            date: selectedDateStr,
+            title: title,
+            category: cat,
+            time: time
+        });
+        closeModal();
+    }
+    window.deleteEvent = function(key) {
+        if(confirm("Delete Event?")) remove(ref(db, 'events/' + key));
+    }
 
     // --- CALENDAR LOGIC ---
     window.changeMonth = function(delta) {
@@ -398,28 +385,43 @@
     }
 
     window.selectDate = function(dateStr) {
+        selectedDateStr = dateStr;
         const detailBox = document.getElementById('calDetail');
         const detailList = document.getElementById('detailList');
+        const eventListArea = document.getElementById('eventListArea');
         const detailDate = document.getElementById('detailDate');
-        const detailTotal = document.getElementById('detailTotal');
 
-        // Visuelles Feedback im Grid
+        // Visual Active State
         document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('active'));
         const dayEl = document.getElementById('day-' + dateStr);
         if(dayEl) dayEl.classList.add('active');
 
-        // Filter Data
-        const dayEntries = Object.entries(historyData).filter(([k, v]) => v.date === dateStr).sort(([,a],[,b]) => a.start - b.start);
+        // 1. Filter Logs (Telemetry)
+        const dayLogs = Object.entries(historyData).filter(([k, v]) => v.date === dateStr).sort(([,a],[,b]) => a.start - b.start);
         
-        if(dayEntries.length === 0) {
-            detailBox.classList.remove('show');
-            return;
+        // 2. Filter Events (Schedule)
+        const dayEvents = Object.entries(eventData).filter(([k, v]) => v.date === dateStr);
+
+        detailList.innerHTML = "";
+        eventListArea.innerHTML = "";
+
+        // Render Events
+        if(dayEvents.length > 0) {
+            dayEvents.forEach(([key, ev]) => {
+                const timeStr = ev.time ? `<span style="color:#fff; background:#333; padding:2px 4px; border-radius:3px; font-size:0.8em; margin-right:5px;">${ev.time}</span>` : "";
+                const col = colors[ev.category] || "#888";
+                eventListArea.innerHTML += `
+                    <div style="background:#222; padding:8px; border-left:3px solid ${col}; margin-bottom:5px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>${timeStr}<span style="font-weight:bold; color:#e0e0e0;">${ev.title}</span></div>
+                        <button onclick="deleteEvent('${key}')" style="background:none; border:none; color:#444; padding:0; width:auto; font-size:1.2em;">×</button>
+                    </div>
+                `;
+            });
         }
 
-        // Render Details
+        // Render Logs
         let totalMs = 0;
-        detailList.innerHTML = "";
-        dayEntries.forEach(([key, entry]) => {
+        dayLogs.forEach(([key, entry]) => {
             totalMs += entry.duration;
             let li = document.createElement('li');
             let hrs = Math.floor(entry.duration / 3600000);
@@ -430,70 +432,54 @@
             detailList.appendChild(li);
         });
 
-        const tHrs = Math.floor(totalMs / 3600000);
-        const tMins = Math.floor((totalMs % 3600000) / 60000);
-
         detailDate.innerText = dateStr;
-        detailTotal.innerText = `Total: ${tHrs}h ${tMins}m`;
         detailBox.classList.add('show');
     }
 
     function renderCalendar() {
         const grid = document.getElementById('calGrid');
         grid.innerHTML = "";
-        
-        // Header Days
         ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(d => grid.innerHTML += `<div class="cal-head-day">${d}</div>`);
-
         const year = currentCalDate.getFullYear();
         const month = currentCalDate.getMonth();
-        
-        // Titel setzen (z.B. JANUAR 2026)
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         document.getElementById('calTitle').innerText = `${monthNames[month]} ${year}`;
-
-        // Erster Tag des Monats (0 = Sonntag, 1 = Montag...)
-        const firstDay = new Date(year, month, 1).getDay(); // JS: So=0, Mo=1...
-        // Wir brauchen Mo=0, So=6
+        const firstDay = new Date(year, month, 1).getDay(); 
         let startOffset = firstDay === 0 ? 6 : firstDay - 1; 
-
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        // Leere Zellen davor
-        for(let i=0; i<startOffset; i++) {
-            grid.innerHTML += `<div class="cal-day empty"></div>`;
-        }
+        for(let i=0; i<startOffset; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
 
-        // Tage rendern
         for(let i=1; i<=daysInMonth; i++) {
             const dateObj = new Date(year, month, i);
-            const dateStr = dateObj.toLocaleDateString(); // Format muss mit historyData.date übereinstimmen (DD.MM.YYYY in DE Browsern)
+            const dateStr = dateObj.toLocaleDateString(); 
             
-            // Daten aggregieren für diesen Tag
+            // Check Data
             let dayDur = 0;
             let catsPresent = new Set();
-            
             Object.values(historyData).forEach(entry => {
-                if(entry.date === dateStr) {
-                    dayDur += entry.duration;
-                    catsPresent.add(entry.category);
-                }
+                if(entry.date === dateStr) { dayDur += entry.duration; catsPresent.add(entry.category); }
             });
+
+            // Check Events
+            let hasEvents = Object.values(eventData).some(ev => ev.date === dateStr);
 
             let valHtml = "";
             let dotHtml = "";
+            let eventMarkHtml = hasEvents ? `<div class="cal-event-mark" style="border-top-color:${colors.Uni}"></div>` : ""; // Default Color for mark
 
             if(dayDur > 0) {
-                let h = Math.round(dayDur / 3600000 * 10) / 10; // 1 Kommastelle
+                let h = Math.round(dayDur / 3600000 * 10) / 10; 
                 valHtml = `<span class="cal-val">${h}h</span>`;
-                
-                // Dots bauen
                 dotHtml = `<div class="cal-dots">`;
                 if(catsPresent.has('FS')) dotHtml += `<div class="cal-dot" style="background:${colors.FS}"></div>`;
                 if(catsPresent.has('Uni')) dotHtml += `<div class="cal-dot" style="background:${colors.Uni}"></div>`;
                 if(catsPresent.has('Freizeit')) dotHtml += `<div class="cal-dot" style="background:${colors.Freizeit}"></div>`;
                 if(catsPresent.has('Schlaf')) dotHtml += `<div class="cal-dot" style="background:${colors.Schlaf}"></div>`;
                 dotHtml += `</div>`;
+            } else if (hasEvents) {
+                 // Show something if only event but no time tracked
+                 valHtml = `<span class="cal-val" style="color:#666">•</span>`;
             }
 
             grid.innerHTML += `
@@ -501,6 +487,7 @@
                 <span class="cal-num">${i}</span>
                 ${valHtml}
                 ${dotHtml}
+                ${eventMarkHtml}
             </div>`;
         }
     }
@@ -535,8 +522,17 @@
     onValue(ref(db, 'history'), (snapshot) => { 
         historyData = snapshot.val() || {};
         processData(historyData); 
-        // Wenn Kalender aktiv ist, neu rendern um Daten-Updates zu zeigen
         if(document.getElementById('view-calendar').classList.contains('active-view')) renderCalendar();
+    });
+
+    // NEW: Listen to Events
+    onValue(ref(db, 'events'), (snapshot) => {
+        eventData = snapshot.val() || {};
+        // If calendar is open and a day is selected, refresh detail view
+        if(document.getElementById('view-calendar').classList.contains('active-view')) {
+            renderCalendar();
+            if(selectedDateStr) selectDate(selectedDateStr);
+        }
     });
 
     window.startWork = function(category) {
@@ -570,20 +566,16 @@
         const dateStr = dateInput.toLocaleDateString(); 
         const durationMs = h * 60 * 60 * 1000;
         const entryTimestamp = dateInput.setHours(8,0,0,0);
-
         push(ref(db, 'history'), { category: 'Schlaf', subCategory: 'Nachtrag', start: entryTimestamp - durationMs, end: entryTimestamp, duration: durationMs, date: dateStr, note: "Manual Entry" });
-
         let timeToDeduct = durationMs;
-        let entriesUpdated = 0;
         Object.entries(historyData).forEach(([key, val]) => {
             if(timeToDeduct <= 0) return;
             if(val.category === 'Freizeit' && val.date === dateStr) {
-                if(val.duration > timeToDeduct) { update(ref(db, 'history/' + key), { duration: val.duration - timeToDeduct }); timeToDeduct = 0; entriesUpdated++; } 
-                else { timeToDeduct -= val.duration; remove(ref(db, 'history/' + key)); entriesUpdated++; }
+                if(val.duration > timeToDeduct) { update(ref(db, 'history/' + key), { duration: val.duration - timeToDeduct }); timeToDeduct = 0; } 
+                else { timeToDeduct -= val.duration; remove(ref(db, 'history/' + key)); }
             }
         });
-        alert(`Rest logged. ${entriesUpdated} Free-Time slots adjusted.`);
-        document.getElementById('sleepHours').value = "";
+        alert("Rest logged."); document.getElementById('sleepHours').value = "";
     }
 
     window.switchStatView = function(view) {
