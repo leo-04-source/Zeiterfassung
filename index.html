@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Race Control - Full Spec</title>
+    <title>Race Control - Recovery Spec</title>
     <style>
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --text-color: #ffffff;
-            --accent-color: #3498db; /* Das moderne Blau */
+            --accent-color: #3498db; 
             --success-color: #2ecc71; 
             --danger-color: #e74c3c; 
             --warning-color: #f1c40f; 
@@ -30,11 +30,9 @@
 
         .container { width: 100%; max-width: 700px; }
 
-        /* Header */
         header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
 
-        /* Buttons & Inputs Global Style */
         button {
             border: none; padding: 10px 15px; border-radius: 8px;
             font-size: 0.9rem; font-weight: 600; cursor: pointer;
@@ -49,12 +47,10 @@
         }
         input[type="text"]:focus { border-color: var(--accent-color); }
 
-        /* Top Controls */
         .top-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .btn-safety { background-color: var(--warning-color); color: #000; }
         .btn-ferme { background-color: #34495e; }
 
-        /* Card Style */
         .card {
             background-color: var(--card-bg);
             padding: 20px; border-radius: 12px; margin-bottom: 20px;
@@ -62,16 +58,13 @@
         }
         .card h3 { margin-top: 0; color: var(--accent-color); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 15px; }
 
-        /* Warmup Checklist */
         .checklist label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 1rem; }
         input[type="checkbox"] { transform: scale(1.2); margin-right: 10px; }
 
-        /* Inputs Area */
         .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
         .input-area input { flex-grow: 1; }
         .btn-add { background-color: var(--accent-color); }
 
-        /* Stint List */
         ul { list-style: none; padding: 0; }
         li {
             background: var(--card-bg); margin-bottom: 10px; padding: 15px;
@@ -82,7 +75,6 @@
         .btn-start { background-color: var(--success-color); margin-right: 5px; }
         .btn-delete { background-color: var(--danger-color); }
 
-        /* --- TELEMETRIE TABELLE (Das hat gefehlt) --- */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
         th { text-align: left; color: #888; padding-bottom: 10px; border-bottom: 1px solid #444; }
         td { padding: 10px 0; border-bottom: 1px solid #333; }
@@ -90,7 +82,6 @@
         .btn-clear { background-color: transparent; border: 1px solid #444; color: #888; width: 100%; margin-top: 10px;}
         .btn-clear:hover { background-color: #333; }
 
-        /* --- OVERLAY (Fokus Modus) --- */
         #sector-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(18, 18, 18, 0.98); display: none;
@@ -103,7 +94,6 @@
         .radio-box { margin-bottom: 40px; text-align: center; width: 90%; max-width: 400px; }
         .radio-box span { color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 10px; }
 
-        /* Modes Styling */
         body.safety-car-active { border: 5px solid var(--warning-color); }
         body.safety-car-active .btn-add, body.safety-car-active .btn-start { opacity: 0.2; pointer-events: none; }
         
@@ -152,7 +142,7 @@
                 </tr>
             </thead>
             <tbody id="telemetry-body">
-                </tbody>
+            </tbody>
         </table>
         <button class="btn-clear" onclick="clearTelemetry()">Saison-Daten löschen</button>
     </div>
@@ -175,24 +165,55 @@
 </div>
 
 <script>
-    // --- DATEN LADEN ---
-    let stints = JSON.parse(localStorage.getItem('raceStints')) || [];
-    let telemetry = JSON.parse(localStorage.getItem('raceTelemetry')) || [];
+    // --- DATEN INITIALISIEREN ---
+    let stints = [];
+    let telemetry = [];
     
-    // Variablen für Timer und Status
+    // Timer Variablen
     let timerInterval;
     let startTime;
     let currentTaskName = "";
     let isSafetyCar = false;
     let isParcFerme = false;
 
-    // Beim Start alles anzeigen
     window.onload = function() {
+        // 1. Neue Daten laden
+        const savedStints = localStorage.getItem('raceStints');
+        const savedTelemetry = localStorage.getItem('raceTelemetry');
+        
+        if (savedStints) stints = JSON.parse(savedStints);
+        if (savedTelemetry) telemetry = JSON.parse(savedTelemetry);
+
+        // --- RETTUNGS-MODUS (MIGRATION) ---
+        // Wenn keine neuen Daten da sind, suchen wir nach alten!
+        if (stints.length === 0) {
+            // Liste der möglichen alten Speichernamen
+            const oldKeys = ['tasks', 'missions', 'todos', 'entries'];
+            
+            for (let key of oldKeys) {
+                const oldData = localStorage.getItem(key);
+                if (oldData) {
+                    try {
+                        const parsed = JSON.parse(oldData);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            stints = parsed; // Alte Daten übernehmen
+                            localStorage.setItem('raceStints', JSON.stringify(stints)); // In neues System speichern
+                            alert(`INFO: Alte Daten aus '${key}' wurden gefunden und in Race Control importiert!`);
+                            break; // Gefunden, Suche beenden
+                        }
+                    } catch(e) {
+                        console.error("Fehler beim Importieren:", e);
+                    }
+                }
+            }
+        }
+        
+        // Rendern
         renderStints();
         renderTelemetry();
     };
 
-    // --- STINT LOGIK (TO-DO) ---
+    // --- LOGIK ---
     function addStint() {
         const input = document.getElementById('new-stint-input');
         if(!input.value) return;
@@ -229,7 +250,6 @@
         });
     }
 
-    // --- TIMER & SEKTOR LOGIK ---
     function startSector(taskName) {
         if(isSafetyCar) return;
         currentTaskName = taskName;
@@ -251,9 +271,8 @@
 
     function stopSector() {
         clearInterval(timerInterval);
-        const diff = Date.now() - startTime; // Zeit in Millisekunden
+        const diff = Date.now() - startTime;
         
-        // 1. Zeit speichern (Telemetrie)
         const entry = {
             task: currentTaskName,
             date: new Date().toLocaleDateString('de-DE'),
@@ -262,19 +281,15 @@
         telemetry.push(entry);
         localStorage.setItem('raceTelemetry', JSON.stringify(telemetry));
         
-        // 2. UI zurücksetzen
         document.getElementById('sector-overlay').style.display = 'none';
-        renderTelemetry(); // Tabelle aktualisieren
+        renderTelemetry();
     }
 
-    // --- TELEMETRIE ANZEIGE ---
     function renderTelemetry() {
         const tbody = document.getElementById('telemetry-body');
         tbody.innerHTML = '';
         
-        // Neueste Einträge oben
         telemetry.slice().reverse().forEach(entry => {
-            // Zeit formatieren
             const dateObj = new Date(entry.ms);
             const h = String(dateObj.getUTCHours()).padStart(2, '0');
             const m = String(dateObj.getUTCMinutes()).padStart(2, '0');
@@ -299,7 +314,6 @@
         }
     }
 
-    // --- MODI & BOXENFUNK ---
     function sendRadio() {
         const val = document.getElementById('radio-input').value;
         if(val) { 
