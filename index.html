@@ -10,7 +10,6 @@
             font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             margin: 0; padding: 0; 
             background-color: #0d0d0d; 
-            /* Carbon Fiber Pattern Effect via CSS Gradients */
             background-image: 
                 linear-gradient(45deg, #1a1a1a 25%, transparent 25%, transparent 75%, #1a1a1a 75%, #1a1a1a),
                 linear-gradient(45deg, #1a1a1a 25%, transparent 25%, transparent 75%, #1a1a1a 75%, #1a1a1a);
@@ -39,12 +38,12 @@
         .sidebar-title { 
             font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 30px; padding-left: 10px; 
             text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid #ff3b30; padding-left: 15px;
-            font-style: italic; /* Speed look */
+            font-style: italic;
         }
         .nav-item {
             padding: 12px 15px;
             margin-bottom: 8px;
-            border-radius: 4px; /* Tech look */
+            border-radius: 4px;
             color: #666;
             text-decoration: none;
             font-size: 0.85rem;
@@ -76,17 +75,15 @@
         }
         .view-container.active-view { display: block; }
 
-        /* Card Box = Telemetry Panel */
         .card-box { 
             background: #161616; 
             padding: 25px; 
-            border-radius: 8px; /* Tech corners */
+            border-radius: 8px; 
             border: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
             margin-bottom: 20px; 
             position: relative;
         }
-        /* Schrauben-Optik in den Ecken (Optional Visual) */
         .card-box::before { content: ''; position: absolute; top: 10px; left: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
         .card-box::after { content: ''; position: absolute; top: 10px; right: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
 
@@ -101,14 +98,13 @@
         h1 { margin: 0; font-size: 1.6rem; color: #fff; margin-bottom: 5px; text-transform: uppercase; font-style: italic; letter-spacing: 1px; font-weight: 900;}
         p.subtitle { color: #666; margin-bottom: 25px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 2px;}
         
-        /* THE TIMER DISPLAY */
         #display { 
-            font-family: 'Courier New', Courier, monospace; /* Monospace for Digital look */
+            font-family: 'Courier New', Courier, monospace;
             font-size: 3.8em; 
             margin: 15px 0 25px 0; 
             font-weight: 700; 
             color: #fff; 
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Glowing Effect */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
             letter-spacing: -2px;
         }
         
@@ -117,26 +113,24 @@
         
         #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { 
             width: 100%; padding: 15px; border-radius: 6px; border: 1px solid #333; 
-            background: #000; color: #0a84ff; /* Digital Blue Text */
+            background: #000; color: #0a84ff; 
             font-family: 'Courier New', monospace; font-weight: bold;
             font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; 
             transition: 0.3s;
         }
         #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; box-shadow: 0 0 10px rgba(10, 132, 255, 0.2); }
-        
-        /* Custom Select Arrow */
         #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ff3b30%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); }
         
         .status-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 0.75em; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; background: #222; color: #666; letter-spacing: 1px; border: 1px solid #333;}
         
-        /* BUTTONS - Mechanical Switch Look */
+        /* BUTTONS */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
         button { 
             padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; 
             text-transform: uppercase; letter-spacing: 0.5px;
             transition: transform 0.1s, filter 0.2s; 
             display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.8rem; color: white; width: 100%;
-            border-bottom: 3px solid rgba(0,0,0,0.3); /* 3D Click feel */
+            border-bottom: 3px solid rgba(0,0,0,0.3);
         }
         button:active { transform: translateY(2px); border-bottom-width: 0; }
         
@@ -150,6 +144,7 @@
             border: 2px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;
         }
         
+        /* Stats Styles */
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
         .stat-tab { background: #111; border: 1px solid #333; color: #666; padding: 6px 15px; border-radius: 4px; font-size: 0.75em; cursor: pointer; margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
         .stat-tab.active { background: #333; color: white; border-color: #888; }
@@ -180,6 +175,35 @@
         .log-note { display: block; color: #666; font-style: italic; font-size: 0.85em; }
         .sub-tag { display: inline-block; font-size: 0.7em; background: #222; padding: 2px 6px; border-radius: 2px; color: #ccc; margin-left: 5px; vertical-align: middle; border: 1px solid #444;}
 
+        /* --- CALENDAR STYLES (NEW) --- */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .cal-btn { background: #222; border: 1px solid #444; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .cal-title { font-size: 1.1em; font-weight: 900; text-transform: uppercase; color: #fff; }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
+        .cal-head-day { text-align: center; font-size: 0.6em; color: #666; font-weight: bold; text-transform: uppercase; padding-bottom: 5px;}
+        
+        .cal-day { 
+            background: #111; border: 1px solid #2a2a2a; height: 50px; border-radius: 4px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: 0.2s;
+        }
+        .cal-day:hover { border-color: #666; background: #1a1a1a; }
+        .cal-day.active { border-color: #ff3b30; background: #1a1a1a; box-shadow: 0 0 10px rgba(255,59,48,0.2); }
+        .cal-day.empty { background: transparent; border: none; cursor: default; }
+        
+        .cal-num { font-size: 0.8em; font-weight: bold; color: #888; }
+        .cal-val { font-size: 0.7em; font-weight: 800; color: #fff; margin-top: 2px; font-family: 'Courier New', monospace; }
+        
+        .cal-dots { display: flex; gap: 2px; margin-top: 3px; height: 3px; width: 80%; justify-content: center;}
+        .cal-dot { width: 100%; height: 100%; border-radius: 1px; opacity: 0.8; }
+
+        .detail-box { background: #111; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-top: 20px; display: none; }
+        .detail-box.show { display: block; animation: fadeIn 0.3s; }
+        .detail-title { font-size: 0.8em; font-weight: 900; text-transform: uppercase; color: #666; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; justify-content: space-between;}
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); width: 250px; }
             .sidebar.open { transform: translateX(0); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
@@ -202,7 +226,7 @@
         <div class="nav-item" id="nav-tracker" onclick="showView('tracker')">
             <span>⏱️</span> Telemetry
         </div>
-        <div class="nav-item" onclick="alert('Bald verfügbar!')">
+        <div class="nav-item" id="nav-calendar" onclick="showView('calendar')">
             <span>📅</span> Calendar
         </div>
     </div>
@@ -212,7 +236,7 @@
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
                 <h1>Overview</h1>
-                <p class="subtitle">Season 25/26 • v7.5</p>
+                <p class="subtitle">Season 25/26 • v7.6</p>
 
                 <p class="input-label" style="text-align:center; margin-bottom:10px;">Quick Launch</p>
                 <div class="btn-grid start-buttons-container">
@@ -222,7 +246,7 @@
                 </div>
 
                 <div class="chart-container">
-                    <span class="dash-label" style="margin-bottom:15px">Weekly Pace (All Sectors)</span>
+                    <span class="dash-label" style="margin-bottom:15px">Weekly Pace</span>
                     <div class="bar-chart" id="weekChartDash"></div>
                 </div>
                 
@@ -249,12 +273,10 @@
                             <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
                         </select>
                     </div>
-
                     <div class="input-group">
                         <span class="input-label">2. Log Note</span>
                         <input type="text" id="noteInput" placeholder="Task description...">
                     </div>
-
                     <div class="btn-grid start-buttons-container">
                         <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
                         <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
@@ -265,7 +287,7 @@
                 <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ BOX BOX (STOP)</button>
 
                 <div class="sleep-section">
-                    <span class="input-label" style="margin-bottom:10px">😴 Driver Rest (Manual)</span>
+                    <span class="input-label" style="margin-bottom:10px">😴 Driver Rest</span>
                     <div class="sleep-grid">
                         <input type="date" id="sleepDate">
                         <input type="number" id="sleepHours" placeholder="h" step="0.5">
@@ -284,27 +306,42 @@
                     <div class="dash-card">
                         <span class="dash-label">Season <span id="lblSeason">25/26</span></span>
                         <span class="dash-val" id="valSeason">0h</span>
-                        <span class="dash-sub">Total</span>
                     </div>
                     <div class="dash-card">
                         <span class="dash-label">Year <span id="lblYear">2026</span></span>
                         <span class="dash-val" id="valYear">0h</span>
-                        <span class="dash-sub">Current</span>
                     </div>
                     <div class="dash-card">
                         <span class="dash-label">Avg Pace</span>
                         <span class="dash-val" id="valAvg">0h</span>
-                        <span class="dash-sub">/ Month</span>
                     </div>
                 </div>
-
-                <div class="chart-container">
-                    <span class="dash-label" style="margin-bottom:15px">Weekly Telemetry</span>
-                    <div class="bar-chart" id="weekChartTrack"></div>
-                </div>
-
                 <button class="btn-export" onclick="downloadCSV()">📥 Export Telemetry</button>
                 <ul id="logList" class="log-list"></ul>
+            </div>
+        </div>
+
+        <div id="view-calendar" class="view-container">
+            <div class="card-box">
+                <h1>Race Calendar</h1>
+                
+                <div class="cal-header">
+                    <button class="cal-btn" onclick="changeMonth(-1)">❮</button>
+                    <span class="cal-title" id="calTitle">Loading...</span>
+                    <button class="cal-btn" onclick="changeMonth(1)">❯</button>
+                </div>
+                
+                <div class="cal-grid" id="calGrid">
+                    </div>
+
+                <div id="calDetail" class="detail-box">
+                    <div class="detail-title">
+                        <span id="detailDate">Date</span>
+                        <span id="detailTotal">0h 0m</span>
+                    </div>
+                    <ul id="detailList" class="log-list" style="margin-top:10px; border-top:none;"></ul>
+                </div>
+
             </div>
         </div>
 
@@ -315,7 +352,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, get, child, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // ⬇️⬇️⬇️ FIREBASE CONFIG ⬇️⬇️⬇️
     const firebaseConfig = {
       apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
       authDomain: "zeit-97904.firebaseapp.com",
@@ -325,7 +361,6 @@
       messagingSenderId: "677314069900",
       appId: "1:677314069900:web:6b4baa4d98397dd8cfc2a9"
     };
-    // ⬆️⬆️⬆️ ENDE ⬆️⬆️⬆️
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -337,6 +372,9 @@
     let currentStatView = "FS"; 
     const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2' };
     const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf' };
+    
+    // Calendar Vars
+    let currentCalDate = new Date(); // Tracks the month currently being viewed
 
     document.getElementById('sleepDate').valueAsDate = new Date();
 
@@ -346,29 +384,134 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('nav-' + viewName).classList.add('active');
         document.getElementById('sidebar').classList.remove('open');
+
+        // Wenn Kalender geöffnet wird, render
+        if(viewName === 'calendar') renderCalendar();
     }
 
-    window.toggleMenu = function() {
-        document.getElementById('sidebar').classList.toggle('open');
+    window.toggleMenu = function() { document.getElementById('sidebar').classList.toggle('open'); }
+
+    // --- CALENDAR LOGIC ---
+    window.changeMonth = function(delta) {
+        currentCalDate.setMonth(currentCalDate.getMonth() + delta);
+        renderCalendar();
     }
 
-    document.addEventListener('click', (e) => {
-        const sidebar = document.getElementById('sidebar');
-        const btn = document.querySelector('.menu-toggle');
-        if(window.innerWidth <= 768 && !sidebar.contains(e.target) && !btn.contains(e.target) && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
+    window.selectDate = function(dateStr) {
+        const detailBox = document.getElementById('calDetail');
+        const detailList = document.getElementById('detailList');
+        const detailDate = document.getElementById('detailDate');
+        const detailTotal = document.getElementById('detailTotal');
+
+        // Visuelles Feedback im Grid
+        document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('active'));
+        const dayEl = document.getElementById('day-' + dateStr);
+        if(dayEl) dayEl.classList.add('active');
+
+        // Filter Data
+        const dayEntries = Object.entries(historyData).filter(([k, v]) => v.date === dateStr).sort(([,a],[,b]) => a.start - b.start);
+        
+        if(dayEntries.length === 0) {
+            detailBox.classList.remove('show');
+            return;
         }
-    });
 
+        // Render Details
+        let totalMs = 0;
+        detailList.innerHTML = "";
+        dayEntries.forEach(([key, entry]) => {
+            totalMs += entry.duration;
+            let li = document.createElement('li');
+            let hrs = Math.floor(entry.duration / 3600000);
+            let mins = Math.floor((entry.duration % 3600000) / 60000);
+            let subHtml = (entry.category === 'FS' && entry.subCategory) ? `<span class="sub-tag">${entry.subCategory}</span>` : "";
+            let catColor = colors[entry.category] || "#888";
+            li.innerHTML = `<div><span style="color:${catColor}; font-weight:bold; font-family:'Courier New'">[${labels[entry.category] || entry.category}]</span>${subHtml}<span class="log-note"> ${entry.note || ""}</span></div><strong style="font-family:'Courier New'">${hrs}h ${mins}m</strong>`;
+            detailList.appendChild(li);
+        });
+
+        const tHrs = Math.floor(totalMs / 3600000);
+        const tMins = Math.floor((totalMs % 3600000) / 60000);
+
+        detailDate.innerText = dateStr;
+        detailTotal.innerText = `Total: ${tHrs}h ${tMins}m`;
+        detailBox.classList.add('show');
+    }
+
+    function renderCalendar() {
+        const grid = document.getElementById('calGrid');
+        grid.innerHTML = "";
+        
+        // Header Days
+        ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(d => grid.innerHTML += `<div class="cal-head-day">${d}</div>`);
+
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        
+        // Titel setzen (z.B. JANUAR 2026)
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        document.getElementById('calTitle').innerText = `${monthNames[month]} ${year}`;
+
+        // Erster Tag des Monats (0 = Sonntag, 1 = Montag...)
+        const firstDay = new Date(year, month, 1).getDay(); // JS: So=0, Mo=1...
+        // Wir brauchen Mo=0, So=6
+        let startOffset = firstDay === 0 ? 6 : firstDay - 1; 
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Leere Zellen davor
+        for(let i=0; i<startOffset; i++) {
+            grid.innerHTML += `<div class="cal-day empty"></div>`;
+        }
+
+        // Tage rendern
+        for(let i=1; i<=daysInMonth; i++) {
+            const dateObj = new Date(year, month, i);
+            const dateStr = dateObj.toLocaleDateString(); // Format muss mit historyData.date übereinstimmen (DD.MM.YYYY in DE Browsern)
+            
+            // Daten aggregieren für diesen Tag
+            let dayDur = 0;
+            let catsPresent = new Set();
+            
+            Object.values(historyData).forEach(entry => {
+                if(entry.date === dateStr) {
+                    dayDur += entry.duration;
+                    catsPresent.add(entry.category);
+                }
+            });
+
+            let valHtml = "";
+            let dotHtml = "";
+
+            if(dayDur > 0) {
+                let h = Math.round(dayDur / 3600000 * 10) / 10; // 1 Kommastelle
+                valHtml = `<span class="cal-val">${h}h</span>`;
+                
+                // Dots bauen
+                dotHtml = `<div class="cal-dots">`;
+                if(catsPresent.has('FS')) dotHtml += `<div class="cal-dot" style="background:${colors.FS}"></div>`;
+                if(catsPresent.has('Uni')) dotHtml += `<div class="cal-dot" style="background:${colors.Uni}"></div>`;
+                if(catsPresent.has('Freizeit')) dotHtml += `<div class="cal-dot" style="background:${colors.Freizeit}"></div>`;
+                if(catsPresent.has('Schlaf')) dotHtml += `<div class="cal-dot" style="background:${colors.Schlaf}"></div>`;
+                dotHtml += `</div>`;
+            }
+
+            grid.innerHTML += `
+            <div class="cal-day" id="day-${dateStr}" onclick="selectDate('${dateStr}')">
+                <span class="cal-num">${i}</span>
+                ${valHtml}
+                ${dotHtml}
+            </div>`;
+        }
+    }
+
+    // --- STANDARD APP LOGIC ---
     function getSeasonTag(timestamp) {
         const d = new Date(timestamp);
         const month = d.getMonth(); 
         const year = d.getFullYear();
-        if (month >= 8) {
-            return `${year.toString().substr(2)}/${(year+1).toString().substr(2)}`; 
-        } else {
-            return `${(year-1).toString().substr(2)}/${year.toString().substr(2)}`; 
-        }
+        if (month >= 8) return `${year.toString().substr(2)}/${(year+1).toString().substr(2)}`; 
+        else return `${(year-1).toString().substr(2)}/${year.toString().substr(2)}`; 
     }
 
     onValue(ref(db, 'status'), (snapshot) => {
@@ -392,6 +535,8 @@
     onValue(ref(db, 'history'), (snapshot) => { 
         historyData = snapshot.val() || {};
         processData(historyData); 
+        // Wenn Kalender aktiv ist, neu rendern um Daten-Updates zu zeigen
+        if(document.getElementById('view-calendar').classList.contains('active-view')) renderCalendar();
     });
 
     window.startWork = function(category) {
@@ -400,7 +545,6 @@
         const note = document.getElementById('noteInput').value;
         let subCat = "";
         if (category === 'FS') subCat = document.getElementById('fsTypeSelect').value;
-
         get(child(ref(db), 'status/lastStop')).then((snapshot) => {
             set(ref(db, 'status'), { running: true, startTime: now, category: category, subCategory: subCat, lastStop: 0, note: note });
         });
@@ -412,11 +556,7 @@
             if (state && state.running) {
                 const now = new Date().getTime();
                 const finalNote = document.getElementById('noteInput').value;
-                push(ref(db, 'history'), { 
-                    category: state.category, subCategory: state.subCategory || "", 
-                    start: state.startTime, end: now, duration: now - state.startTime, 
-                    date: new Date(state.startTime).toLocaleDateString(), note: finalNote 
-                });
+                push(ref(db, 'history'), { category: state.category, subCategory: state.subCategory || "", start: state.startTime, end: now, duration: now - state.startTime, date: new Date(state.startTime).toLocaleDateString(), note: finalNote });
                 set(ref(db, 'status'), { running: false, startTime: 0, category: "", lastStop: now, note: "" });
             }
         });
@@ -425,30 +565,21 @@
     window.addSleep = function() {
         const h = parseFloat(document.getElementById('sleepHours').value);
         if(!h || h <= 0) return alert("Enter hours");
-
         const dateInput = document.getElementById('sleepDate').valueAsDate;
         if(!dateInput) return alert("Date required");
-        
         const dateStr = dateInput.toLocaleDateString(); 
         const durationMs = h * 60 * 60 * 1000;
         const entryTimestamp = dateInput.setHours(8,0,0,0);
 
-        push(ref(db, 'history'), {
-            category: 'Schlaf', subCategory: 'Nachtrag', start: entryTimestamp - durationMs, end: entryTimestamp,
-            duration: durationMs, date: dateStr, note: "Manual Entry"
-        });
+        push(ref(db, 'history'), { category: 'Schlaf', subCategory: 'Nachtrag', start: entryTimestamp - durationMs, end: entryTimestamp, duration: durationMs, date: dateStr, note: "Manual Entry" });
 
         let timeToDeduct = durationMs;
         let entriesUpdated = 0;
         Object.entries(historyData).forEach(([key, val]) => {
             if(timeToDeduct <= 0) return;
             if(val.category === 'Freizeit' && val.date === dateStr) {
-                if(val.duration > timeToDeduct) {
-                    update(ref(db, 'history/' + key), { duration: val.duration - timeToDeduct });
-                    timeToDeduct = 0; entriesUpdated++;
-                } else {
-                    timeToDeduct -= val.duration; remove(ref(db, 'history/' + key)); entriesUpdated++;
-                }
+                if(val.duration > timeToDeduct) { update(ref(db, 'history/' + key), { duration: val.duration - timeToDeduct }); timeToDeduct = 0; entriesUpdated++; } 
+                else { timeToDeduct -= val.duration; remove(ref(db, 'history/' + key)); entriesUpdated++; }
             }
         });
         alert(`Rest logged. ${entriesUpdated} Free-Time slots adjusted.`);
@@ -465,9 +596,7 @@
         renderDashboardValues();
     }
 
-    window.deleteItem = function(key) {
-        if(confirm("Delete Log?")) remove(ref(db, 'history/' + key));
-    }
+    window.deleteItem = function(key) { if(confirm("Delete Log?")) remove(ref(db, 'history/' + key)); }
 
     window.downloadCSV = function() {
         let csv = "Datum,Saison,Start,Ende,Kategorie,Unterkategorie,Minuten,Notiz\n";
@@ -477,25 +606,19 @@
             const noteClean = (e.note||"").replace(/,/g," ");
             csv += `${new Date(e.start).toLocaleDateString()},${season},${new Date(e.start).toLocaleTimeString()},${new Date(e.end).toLocaleTimeString()},${e.category},${sub},${Math.round(e.duration/60000)},${noteClean}\n`;
         });
-        const link = document.createElement("a");
-        link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-        link.download = "Telemetry_Export.csv";
-        link.click();
+        const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "Telemetry_Export.csv"; link.click();
     }
 
     function updateDisplay() {
         if(!localStartTime) return;
         let diff = new Date().getTime() - localStartTime;
-        let hrs = Math.floor(diff / 3600000);
-        let mins = Math.floor((diff % 3600000) / 60000);
-        let secs = Math.floor((diff % 60000) / 1000);
+        let hrs = Math.floor(diff / 3600000); let mins = Math.floor((diff % 3600000) / 60000); let secs = Math.floor((diff % 60000) / 1000);
         document.getElementById('display').innerHTML = (hrs<10?"0"+hrs:hrs) + ':' + (mins<10?"0"+mins:mins) + ':' + (secs<10?"0"+secs:secs);
     }
 
     function updateUI(running, category, subCategory) {
         const startBtnContainers = document.querySelectorAll('.start-buttons-container');
         const stopBtn = document.getElementById('stopBtn');
-        
         if(running) {
             startBtnContainers.forEach(el => el.style.display = 'none');
             stopBtn.style.display = 'block';
@@ -515,7 +638,6 @@
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentSeasonTag = getSeasonTag(now.getTime()); 
-        
         const seasonStartYear = parseInt("20" + currentSeasonTag.split('/')[0]); 
         let monthsPassed = (now.getFullYear() - seasonStartYear) * 12 + (now.getMonth() - 8);
         if (monthsPassed < 1) monthsPassed = 1; else monthsPassed += 1; 
@@ -528,7 +650,6 @@
         document.getElementById('lblYear').innerText = currentYear;
 
         const entries = Object.entries(data).sort(([,a],[,b]) => b.start - a.start);
-        
         entries.forEach(([key, entry]) => {
             const dur = entry.duration;
             const cat = entry.category || 'FS'; 
@@ -558,7 +679,6 @@
         const stats = calculatedStats[currentStatView];
         const fmt = (ms) => Math.floor(ms/3600000) + "h " + Math.floor((ms%3600000)/60000) + "m";
         const fmtYr = (ms) => Math.floor(ms/3600000) + "h";
-
         if(stats) {
             document.getElementById('valSeason').innerText = fmt(stats.season);
             document.getElementById('valYear').innerText = fmtYr(stats.year);
@@ -569,12 +689,10 @@
 
     function renderChart(dailySums) {
         const targetIDs = ['weekChartDash', 'weekChartTrack'];
-        const days = ['Su','Mo','Tu','We','Th','Fr','Sa']; // English Racing short codes
-
+        const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
         targetIDs.forEach(id => {
             const chartDiv = document.getElementById(id);
             if(!chartDiv) return;
-
             chartDiv.innerHTML = "";
             for (let i = 6; i >= 0; i--) {
                 let d = new Date(); d.setDate(d.getDate() - i);
@@ -587,7 +705,6 @@
                 let pUni = totalMs > 0 ? (dayData.Uni / totalMs) * 100 : 0;
                 let pFree = totalMs > 0 ? (dayData.Freizeit / totalMs) * 100 : 0;
                 let pSleep = totalMs > 0 ? (dayData.Schlaf / totalMs) * 100 : 0;
-
                 chartDiv.innerHTML += `
                 <div class="bar-col">
                     <div class="stacked-bar" style="height:${totalHeightPercent}%;">
