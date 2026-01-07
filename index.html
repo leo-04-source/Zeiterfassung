@@ -3,18 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life Season Tracker</title>
+    <title>Race Control Tracker</title>
     <style>
-        /* Global Reset & Layout */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #121212; color: #e0e0e0; overflow-x: hidden; }
+        /* --- MOTORSPORT THEME CSS --- */
+        body { 
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: #0d0d0d; 
+            /* Carbon Fiber Pattern Effect via CSS Gradients */
+            background-image: 
+                linear-gradient(45deg, #1a1a1a 25%, transparent 25%, transparent 75%, #1a1a1a 75%, #1a1a1a),
+                linear-gradient(45deg, #1a1a1a 25%, transparent 25%, transparent 75%, #1a1a1a 75%, #1a1a1a);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            color: #e0e0e0; 
+            overflow-x: hidden; 
+        }
         
         .app-layout { display: flex; min-height: 100vh; }
 
-        /* --- SIDEBAR STYLES --- */
+        /* --- SIDEBAR (PIT WALL) --- */
         .sidebar {
             width: 250px;
-            background: #181818;
-            border-right: 1px solid #333;
+            background: #111;
+            border-right: 2px solid #333;
             display: flex;
             flex-direction: column;
             padding: 20px;
@@ -22,25 +34,33 @@
             height: 100%;
             z-index: 100;
             transition: transform 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
         }
-        .sidebar-title { font-size: 1.2rem; font-weight: bold; color: #fff; margin-bottom: 30px; padding-left: 10px; }
+        .sidebar-title { 
+            font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 30px; padding-left: 10px; 
+            text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid #ff3b30; padding-left: 15px;
+            font-style: italic; /* Speed look */
+        }
         .nav-item {
             padding: 12px 15px;
-            margin-bottom: 5px;
-            border-radius: 10px;
-            color: #888;
+            margin-bottom: 8px;
+            border-radius: 4px; /* Tech look */
+            color: #666;
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
             display: flex;
             align-items: center;
             gap: 10px;
             transition: 0.2s;
             cursor: pointer;
+            border: 1px solid transparent;
         }
-        .nav-item:hover { background: #2c2c2e; color: #fff; }
-        .nav-item.active { background: #2c2c2e; color: #0a84ff; font-weight: bold; }
+        .nav-item:hover { background: #222; color: #fff; border-color: #444; }
+        .nav-item.active { background: #222; color: #ff3b30; border-color: #ff3b30; }
         
-        /* --- MAIN CONTENT STYLES --- */
+        /* --- MAIN CONTENT --- */
         .main-content {
             flex: 1;
             margin-left: 250px;
@@ -56,65 +76,109 @@
         }
         .view-container.active-view { display: block; }
 
-        .card-box { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        /* Card Box = Telemetry Panel */
+        .card-box { 
+            background: #161616; 
+            padding: 25px; 
+            border-radius: 8px; /* Tech corners */
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+            margin-bottom: 20px; 
+            position: relative;
+        }
+        /* Schrauben-Optik in den Ecken (Optional Visual) */
+        .card-box::before { content: ''; position: absolute; top: 10px; left: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
+        .card-box::after { content: ''; position: absolute; top: 10px; right: 10px; width: 4px; height: 4px; background: #333; border-radius: 50%; box-shadow: 0 0 2px #000 inset; }
 
         .menu-toggle {
             display: none;
             position: fixed; top: 15px; left: 15px; z-index: 101;
-            background: #2c2c2e; border: 1px solid #444; color: #fff;
-            padding: 10px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
+            background: #222; border: 1px solid #ff3b30; color: #fff;
+            padding: 10px; border-radius: 4px; cursor: pointer; font-size: 1.2rem;
         }
 
-        /* --- UI ELEMENTS --- */
-        h1 { margin: 0; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
-        p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
+        /* --- TYPOGRAPHY --- */
+        h1 { margin: 0; font-size: 1.6rem; color: #fff; margin-bottom: 5px; text-transform: uppercase; font-style: italic; letter-spacing: 1px; font-weight: 900;}
+        p.subtitle { color: #666; margin-bottom: 25px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 2px;}
         
-        #display { font-size: 3.5em; margin: 10px 0 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
+        /* THE TIMER DISPLAY */
+        #display { 
+            font-family: 'Courier New', Courier, monospace; /* Monospace for Digital look */
+            font-size: 3.8em; 
+            margin: 15px 0 25px 0; 
+            font-weight: 700; 
+            color: #fff; 
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Glowing Effect */
+            letter-spacing: -2px;
+        }
         
         .input-group { margin-bottom: 20px; text-align: left; }
-        .input-label { font-size: 0.75em; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
+        .input-label { font-size: 0.7em; color: #ff3b30; margin-bottom: 5px; display: block; margin-left: 2px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;}
         
-        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; }
-        #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; }
-        #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { 
+            width: 100%; padding: 15px; border-radius: 6px; border: 1px solid #333; 
+            background: #000; color: #0a84ff; /* Digital Blue Text */
+            font-family: 'Courier New', monospace; font-weight: bold;
+            font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; 
+            transition: 0.3s;
+        }
+        #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; box-shadow: 0 0 10px rgba(10, 132, 255, 0.2); }
         
-        .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
+        /* Custom Select Arrow */
+        #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ff3b30%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); }
         
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        button { padding: 15px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.9rem; color: white; width: 100%;}
-        button:active { transform: scale(0.96); }
-        .btn-fs { background: linear-gradient(135deg, #ff3b30, #cc2d24); } 
-        .btn-uni { background: linear-gradient(135deg, #0a84ff, #0060c0); } 
-        .btn-free { background: linear-gradient(135deg, #30d158, #249e42); }
-        .btn-sleep-action { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-top: 10px;}
-        .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;}
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 0.75em; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; background: #222; color: #666; letter-spacing: 1px; border: 1px solid #333;}
+        
+        /* BUTTONS - Mechanical Switch Look */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        button { 
+            padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 0.5px;
+            transition: transform 0.1s, filter 0.2s; 
+            display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.8rem; color: white; width: 100%;
+            border-bottom: 3px solid rgba(0,0,0,0.3); /* 3D Click feel */
+        }
+        button:active { transform: translateY(2px); border-bottom-width: 0; }
+        
+        .btn-fs { background: linear-gradient(180deg, #ff3b30, #c41e15); } 
+        .btn-uni { background: linear-gradient(180deg, #0a84ff, #0056b3); } 
+        .btn-free { background: linear-gradient(180deg, #30d158, #1da33d); }
+        .btn-sleep-action { background: linear-gradient(180deg, #bf5af2, #8e44ad); margin-top: 10px;}
+        
+        .btn-stop { 
+            background: repeating-linear-gradient(45deg, #2c2c2e, #2c2c2e 10px, #3a3a3c 10px, #3a3a3c 20px);
+            border: 2px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;
+        }
         
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
-        .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; margin-bottom: 5px;}
-        .stat-tab.active { background: #444; color: white; border-color: #666; font-weight: bold; }
+        .stat-tab { background: #111; border: 1px solid #333; color: #666; padding: 6px 15px; border-radius: 4px; font-size: 0.75em; cursor: pointer; margin-bottom: 5px; text-transform: uppercase; font-weight: bold;}
+        .stat-tab.active { background: #333; color: white; border-color: #888; }
         
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-        .dash-card { background: #2c2c2e; padding: 12px 8px; border-radius: 12px; text-align: left; transition: 0.3s; }
-        .dash-label { font-size: 0.65em; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .dash-val { font-size: 1.1em; font-weight: 800; color: white; display: block;}
-        .dash-sub { font-size: 0.7em; color: #666; font-weight: normal; margin-top: 2px; display: block;}
+        .dash-card { background: #111; padding: 10px; border-radius: 6px; text-align: left; border-left: 3px solid #333; }
+        .dash-label { font-size: 0.6em; text-transform: uppercase; color: #666; font-weight: 900; display: block; margin-bottom: 5px; }
+        .dash-val { font-size: 1.2em; font-weight: 700; color: #fff; display: block; font-family: 'Courier New', monospace;}
+        .dash-sub { font-size: 0.6em; color: #444; font-weight: normal; margin-top: 2px; display: block; text-transform: uppercase;}
 
-        .chart-container { margin-top: 20px; padding: 20px; background: #2c2c2e; border-radius: 12px; }
+        .chart-container { margin-top: 20px; padding: 20px; background: #111; border-radius: 6px; border: 1px solid #333; }
         .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding-bottom: 20px; }
         .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 12%; }
-        .stacked-bar { width: 100%; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column-reverse; background: #3a3a3c; min-height: 2px; transition: height 0.5s;}
+        .stacked-bar { width: 100%; border-radius: 2px; overflow: hidden; display: flex; flex-direction: column-reverse; background: #222; min-height: 2px; transition: height 0.5s;}
         .segment { width: 100%; }
-        .bar-day { font-size: 0.6em; color: #888; margin-top: 5px; }
+        .bar-day { font-size: 0.6em; color: #666; margin-top: 5px; font-family: 'Courier New', monospace; font-weight: bold;}
 
-        .sleep-section { background: #252525; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
+        .sleep-section { background: #111; padding: 15px; border-radius: 6px; margin-top: 20px; border: 1px solid #333; border-left: 3px solid #bf5af2;}
         .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .btn-export { background: transparent; border: 1px solid #444; color: #888; padding: 10px; font-size: 0.8em; margin-top: 30px; width: auto; display: inline-block; border-radius: 8px;}
+        .btn-export { background: transparent; border: 1px solid #444; color: #666; padding: 10px; font-size: 0.75em; margin-top: 30px; width: auto; display: inline-block; border-radius: 4px; text-transform: uppercase; font-weight: bold;}
+        .btn-export:hover { border-color: #fff; color: #fff;}
+
         .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
-        .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
-        .btn-delete { background: none; border: none; color: #444; font-size: 1.2em; padding: 5px;}
-        .log-note { display: block; color: #aaa; font-style: italic; font-size: 0.85em; }
-        .sub-tag { display: inline-block; font-size: 0.75em; background: #3a3a3c; padding: 2px 6px; border-radius: 4px; color: #ddd; margin-left: 5px; vertical-align: middle;}
+        .log-list li { padding: 10px 0; border-bottom: 1px dashed #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
+        .btn-delete { background: none; border: none; color: #444; font-size: 1.2em; padding: 5px; cursor: pointer;}
+        .btn-delete:hover { color: #ff3b30; }
+        .log-note { display: block; color: #666; font-style: italic; font-size: 0.85em; }
+        .sub-tag { display: inline-block; font-size: 0.7em; background: #222; padding: 2px 6px; border-radius: 2px; color: #ccc; margin-left: 5px; vertical-align: middle; border: 1px solid #444;}
 
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); width: 250px; }
@@ -130,16 +194,16 @@
 
 <div class="app-layout">
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-title">⚡ Tracker App</div>
+        <div class="sidebar-title">🏁 Race Control</div>
         
         <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')">
             <span>🏠</span> Dashboard
         </div>
         <div class="nav-item" id="nav-tracker" onclick="showView('tracker')">
-            <span>⏱️</span> Tracker
+            <span>⏱️</span> Telemetry
         </div>
         <div class="nav-item" onclick="alert('Bald verfügbar!')">
-            <span>📅</span> Kalender
+            <span>📅</span> Calendar
         </div>
     </div>
 
@@ -147,10 +211,10 @@
         
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
-                <h1>Willkommen</h1>
-                <p class="subtitle">Saison 25/26 • Version 7.4</p>
+                <h1>Overview</h1>
+                <p class="subtitle">Season 25/26 • v7.5</p>
 
-                <p class="input-label" style="text-align:center; margin-bottom:10px;">Schnellstart</p>
+                <p class="input-label" style="text-align:center; margin-bottom:10px;">Quick Launch</p>
                 <div class="btn-grid start-buttons-container">
                     <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
                     <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
@@ -158,12 +222,12 @@
                 </div>
 
                 <div class="chart-container">
-                    <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
+                    <span class="dash-label" style="margin-bottom:15px">Weekly Pace (All Sectors)</span>
                     <div class="bar-chart" id="weekChartDash"></div>
                 </div>
                 
-                <div style="margin-top:20px; font-size:0.8em; color:#666">
-                    Total (Lifetime): <span id="totalHours" style="color:white; font-weight:bold">0</span>h
+                <div style="margin-top:20px; font-size:0.7em; color:#444; text-transform:uppercase;">
+                    Career Total: <span id="totalHours" style="color:#fff; font-weight:bold; font-family:'Courier New'">0</span>h
                 </div>
             </div>
         </div>
@@ -171,12 +235,12 @@
         <div id="view-tracker" class="view-container">
             <div class="card-box">
                 <h1>Cockpit</h1>
-                <div id="statusBadge" class="status-badge">Lade...</div>
-                <div id="display">--:--:--</div>
+                <div id="statusBadge" class="status-badge">Box Box</div>
+                <div id="display">00:00:00</div>
                 
                 <div id="inputArea">
                     <div class="input-group">
-                        <span class="input-label">1. FS Kategorie (optional)</span>
+                        <span class="input-label">1. Sector Category</span>
                         <select id="fsTypeSelect">
                             <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
                             <option value="Werkstatt">🔧 Werkstatt</option>
@@ -187,8 +251,8 @@
                     </div>
 
                     <div class="input-group">
-                        <span class="input-label">2. Notiz</span>
-                        <input type="text" id="noteInput" placeholder="Was machst du?">
+                        <span class="input-label">2. Log Note</span>
+                        <input type="text" id="noteInput" placeholder="Task description...">
                     </div>
 
                     <div class="btn-grid start-buttons-container">
@@ -198,48 +262,48 @@
                     </div>
                 </div>
 
-                <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
+                <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ BOX BOX (STOP)</button>
 
                 <div class="sleep-section">
-                    <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
+                    <span class="input-label" style="margin-bottom:10px">😴 Driver Rest (Manual)</span>
                     <div class="sleep-grid">
                         <input type="date" id="sleepDate">
-                        <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+                        <input type="number" id="sleepHours" placeholder="h" step="0.5">
                     </div>
-                    <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern</button>
+                    <button class="btn-sleep-action" onclick="addSleep()">💾 Confirm Rest</button>
                 </div>
 
                 <div class="stat-filter">
                     <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
                     <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
                     <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
-                    <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
+                    <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Sleep</div>
                 </div>
 
                 <div class="dashboard-grid">
                     <div class="dash-card">
-                        <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
+                        <span class="dash-label">Season <span id="lblSeason">25/26</span></span>
                         <span class="dash-val" id="valSeason">0h</span>
-                        <span class="dash-sub">Seit Sept.</span>
+                        <span class="dash-sub">Total</span>
                     </div>
                     <div class="dash-card">
-                        <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
+                        <span class="dash-label">Year <span id="lblYear">2026</span></span>
                         <span class="dash-val" id="valYear">0h</span>
-                        <span class="dash-sub">Jan - Dez</span>
+                        <span class="dash-sub">Current</span>
                     </div>
                     <div class="dash-card">
-                        <span class="dash-label">📈 Ø / Monat</span>
+                        <span class="dash-label">Avg Pace</span>
                         <span class="dash-val" id="valAvg">0h</span>
-                        <span class="dash-sub">in Saison</span>
+                        <span class="dash-sub">/ Month</span>
                     </div>
                 </div>
 
                 <div class="chart-container">
-                    <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
+                    <span class="dash-label" style="margin-bottom:15px">Weekly Telemetry</span>
                     <div class="bar-chart" id="weekChartTrack"></div>
                 </div>
 
-                <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
+                <button class="btn-export" onclick="downloadCSV()">📥 Export Telemetry</button>
                 <ul id="logList" class="log-list"></ul>
             </div>
         </div>
@@ -318,9 +382,9 @@
         } else {
             if (tInterval) { clearInterval(tInterval); tInterval = null; }
             updateUI(false, "");
-            document.getElementById('display').innerHTML = "Bereit";
-            document.getElementById('statusBadge').innerText = "Wähle Modus";
-            document.getElementById('statusBadge').style.color = "#888";
+            document.getElementById('display').innerHTML = "00:00:00";
+            document.getElementById('statusBadge').innerText = "Pit Lane";
+            document.getElementById('statusBadge').style.color = "#666";
             document.getElementById('noteInput').value = "";
         }
     });
@@ -360,10 +424,10 @@
 
     window.addSleep = function() {
         const h = parseFloat(document.getElementById('sleepHours').value);
-        if(!h || h <= 0) return alert("Bitte Stunden eingeben");
+        if(!h || h <= 0) return alert("Enter hours");
 
         const dateInput = document.getElementById('sleepDate').valueAsDate;
-        if(!dateInput) return alert("Bitte Datum wählen");
+        if(!dateInput) return alert("Date required");
         
         const dateStr = dateInput.toLocaleDateString(); 
         const durationMs = h * 60 * 60 * 1000;
@@ -371,7 +435,7 @@
 
         push(ref(db, 'history'), {
             category: 'Schlaf', subCategory: 'Nachtrag', start: entryTimestamp - durationMs, end: entryTimestamp,
-            duration: durationMs, date: dateStr, note: "Manuell nachgetragen"
+            duration: durationMs, date: dateStr, note: "Manual Entry"
         });
 
         let timeToDeduct = durationMs;
@@ -387,7 +451,7 @@
                 }
             }
         });
-        alert(`Schlaf gespeichert. ${entriesUpdated} Freizeit-Einträge verrechnet.`);
+        alert(`Rest logged. ${entriesUpdated} Free-Time slots adjusted.`);
         document.getElementById('sleepHours').value = "";
     }
 
@@ -402,7 +466,7 @@
     }
 
     window.deleteItem = function(key) {
-        if(confirm("Eintrag löschen?")) remove(ref(db, 'history/' + key));
+        if(confirm("Delete Log?")) remove(ref(db, 'history/' + key));
     }
 
     window.downloadCSV = function() {
@@ -415,7 +479,7 @@
         });
         const link = document.createElement("a");
         link.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-        link.download = "Tracker_Export.csv";
+        link.download = "Telemetry_Export.csv";
         link.click();
     }
 
@@ -437,9 +501,10 @@
             stopBtn.style.display = 'block';
             stopBtn.style.borderColor = colors[category] || '#666';
             let badgeText = labels[category] || category;
-            if(category === 'FS' && subCategory) badgeText += " • " + subCategory;
-            document.getElementById('statusBadge').innerText = badgeText;
+            if(category === 'FS' && subCategory) badgeText += " // " + subCategory;
+            document.getElementById('statusBadge').innerText = "TRACKING: " + badgeText;
             document.getElementById('statusBadge').style.color = colors[category] || '#fff';
+            document.getElementById('statusBadge').style.borderColor = colors[category] || '#fff';
         } else {
             startBtnContainers.forEach(el => el.style.display = 'grid');
             stopBtn.style.display = 'none';
@@ -503,13 +568,12 @@
     }
 
     function renderChart(dailySums) {
-        // IDs von BEIDEN Charts (Dashboard & Tracker)
         const targetIDs = ['weekChartDash', 'weekChartTrack'];
-        const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+        const days = ['Su','Mo','Tu','We','Th','Fr','Sa']; // English Racing short codes
 
         targetIDs.forEach(id => {
             const chartDiv = document.getElementById(id);
-            if(!chartDiv) return; // Falls ID nicht gefunden (Sicherheit)
+            if(!chartDiv) return;
 
             chartDiv.innerHTML = "";
             for (let i = 6; i >= 0; i--) {
@@ -547,7 +611,7 @@
             let mins = Math.floor((entry.duration % 3600000) / 60000);
             let subHtml = (entry.category === 'FS' && entry.subCategory) ? `<span class="sub-tag">${entry.subCategory}</span>` : "";
             let catColor = colors[entry.category] || "#888";
-            li.innerHTML = `<div><span style="color:${catColor}; font-weight:bold;">● ${labels[entry.category] || entry.category}</span>${subHtml}<div class="log-meta" style="color:#666; font-size:0.8em; margin-top:2px;">${new Date(entry.start).toLocaleDateString()} ${new Date(entry.start).toLocaleTimeString().substr(0,5)}</div><span class="log-note">${entry.note || ""}</span></div><strong>${hrs}h ${mins}m</strong><button class="btn-delete" onclick="deleteItem('${key}')">×</button>`;
+            li.innerHTML = `<div><span style="color:${catColor}; font-weight:bold; font-family:'Courier New'">[${labels[entry.category] || entry.category}]</span>${subHtml}<div class="log-meta" style="color:#444; font-size:0.8em; margin-top:2px;">${new Date(entry.start).toLocaleDateString()} ${new Date(entry.start).toLocaleTimeString().substr(0,5)}</div><span class="log-note">${entry.note || ""}</span></div><strong style="font-family:'Courier New'">${hrs}h ${mins}m</strong><button class="btn-delete" onclick="deleteItem('${key}')">×</button>`;
             list.appendChild(li);
         });
     }
