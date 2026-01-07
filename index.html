@@ -5,26 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life Season Tracker</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding: 20px; background-color: #121212; color: #e0e0e0; max-width: 600px; margin: 0 auto; padding-bottom: 80px;}
-        .container { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* Global Reset & Layout */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #121212; color: #e0e0e0; overflow-x: hidden; }
+        
+        /* App Layout Container */
+        .app-layout { display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR STYLES --- */
+        .sidebar {
+            width: 250px;
+            background: #181818;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-title { font-size: 1.2rem; font-weight: bold; color: #fff; margin-bottom: 30px; padding-left: 10px; }
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .nav-item:hover { background: #2c2c2e; color: #fff; }
+        .nav-item.active { background: #2c2c2e; color: #0a84ff; font-weight: bold; }
+        
+        /* --- MAIN CONTENT STYLES --- */
+        .main-content {
+            flex: 1;
+            margin-left: 250px; /* Platz für Sidebar */
+            padding: 20px;
+            display: flex;
+            justify-content: center; /* Zentriert den Tracker */
+            align-items: flex-start;
+        }
+
+        /* Alte Container Styles (angepasst) */
+        .container { 
+            background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px;
+        }
+
+        /* Hamburger Button (Mobile Only) */
+        .menu-toggle {
+            display: none; /* Desktop unsichtbar */
+            position: fixed; top: 15px; left: 15px; z-index: 101;
+            background: #2c2c2e; border: 1px solid #444; color: #fff;
+            padding: 10px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
+        }
+
+        /* --- RESTLICHE STYLES VOM TRACKER (v7.1) --- */
         h1 { margin: 0; font-size: 1.5rem; color: #fff; }
         p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
-        
         #display { font-size: 3.5em; margin: 10px 0 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
-        
-        /* Inputs Styles */
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-label { font-size: 0.75em; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
-        
-        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; 
-            background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none;
-        }
+        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; }
         #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; }
         #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
-
         .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
-        
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         button { padding: 15px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.9rem; color: white; width: 100%;}
         button:active { transform: scale(0.96); }
@@ -33,120 +83,138 @@
         .btn-free { background: linear-gradient(135deg, #30d158, #249e42); }
         .btn-sleep-action { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-top: 10px;}
         .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;}
-        
-        /* Sleep Section */
         .sleep-section { background: #252525; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
         .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        /* Stats Dashboard */
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
         .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; margin-bottom: 5px;}
         .stat-tab.active { background: #444; color: white; border-color: #666; font-weight: bold; }
-
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .dash-card { background: #2c2c2e; padding: 12px 8px; border-radius: 12px; text-align: left; transition: 0.3s; }
         .dash-label { font-size: 0.65em; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .dash-val { font-size: 1.1em; font-weight: 800; color: white; display: block;}
         .dash-sub { font-size: 0.7em; color: #666; font-weight: normal; margin-top: 2px; display: block;}
-
-        /* Stacked Chart */
         .chart-container { margin-top: 20px; padding: 20px; background: #2c2c2e; border-radius: 12px; }
         .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding-bottom: 20px; }
         .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 12%; }
-        
         .stacked-bar { width: 100%; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column-reverse; background: #3a3a3c; min-height: 2px; transition: height 0.5s;}
         .segment { width: 100%; }
-        
         .bar-day { font-size: 0.6em; color: #888; margin-top: 5px; }
-
         .btn-export { background: transparent; border: 1px solid #444; color: #888; padding: 10px; font-size: 0.8em; margin-top: 30px; width: auto; display: inline-block; border-radius: 8px;}
         .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
         .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
         .btn-delete { background: none; border: none; color: #444; font-size: 1.2em; padding: 5px;}
         .log-note { display: block; color: #aaa; font-style: italic; font-size: 0.85em; }
         .sub-tag { display: inline-block; font-size: 0.75em; background: #3a3a3c; padding: 2px 6px; border-radius: 4px; color: #ddd; margin-left: 5px; vertical-align: middle;}
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); width: 250px; }
+            .sidebar.open { transform: translateX(0); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
+            .main-content { margin-left: 0; padding-top: 60px; } /* Platz für Hamburger */
+            .menu-toggle { display: block; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🏎️ Season Tracker</h1>
-    <p class="subtitle">Saison 25/26 • Version 7.1</p>
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
-    <div id="statusBadge" class="status-badge">Lade...</div>
-    <div id="display">--:--:--</div>
-    
-    <div id="inputArea">
-        <div class="input-group">
-            <span class="input-label">1. FS Kategorie (optional)</span>
-            <select id="fsTypeSelect">
-                <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
-                <option value="Werkstatt">🔧 Werkstatt</option>
-                <option value="Sitzung">🗣️ Sitzung</option>
-                <option value="Außentermin">🌍 Außentermin</option>
-                <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <span class="input-label">2. Notiz</span>
-            <input type="text" id="noteInput" placeholder="Was machst du?">
-        </div>
-
-        <div id="startButtons" class="btn-grid">
-            <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
-            <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
-            <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
-        </div>
+<div class="app-layout">
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-title">⚡ Tracker App</div>
+        
+        <a href="#" class="nav-item active">
+            <span>🏠</span> Dashboard
+        </a>
+        <a href="#" class="nav-item" onclick="alert('Bald verfügbar!')">
+            <span>📅</span> Kalender (WIP)
+        </a>
+        <a href="#" class="nav-item" onclick="alert('Bald verfügbar!')">
+            <span>⚙️</span> Einstellungen (WIP)
+        </a>
     </div>
 
-    <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
+    <div class="main-content">
+        <div class="container">
+            <h1>🏎️ Season Tracker</h1>
+            <p class="subtitle">Saison 25/26 • Version 7.2</p>
 
-    <div class="sleep-section">
-        <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
-        <div class="sleep-grid">
-            <input type="date" id="sleepDate">
-            <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+            <div id="statusBadge" class="status-badge">Lade...</div>
+            <div id="display">--:--:--</div>
+            
+            <div id="inputArea">
+                <div class="input-group">
+                    <span class="input-label">1. FS Kategorie (optional)</span>
+                    <select id="fsTypeSelect">
+                        <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
+                        <option value="Werkstatt">🔧 Werkstatt</option>
+                        <option value="Sitzung">🗣️ Sitzung</option>
+                        <option value="Außentermin">🌍 Außentermin</option>
+                        <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">2. Notiz</span>
+                    <input type="text" id="noteInput" placeholder="Was machst du?">
+                </div>
+
+                <div id="startButtons" class="btn-grid">
+                    <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
+                    <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
+                    <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
+                </div>
+            </div>
+
+            <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
+
+            <div class="sleep-section">
+                <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
+                <div class="sleep-grid">
+                    <input type="date" id="sleepDate">
+                    <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+                </div>
+                <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern & von Freizeit abziehen</button>
+            </div>
+
+            <div class="stat-filter">
+                <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
+                <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
+                <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
+                <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
+                    <span class="dash-val" id="valSeason">0h</span>
+                    <span class="dash-sub">Seit Sept.</span>
+                </div>
+                <div class="dash-card">
+                    <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
+                    <span class="dash-val" id="valYear">0h</span>
+                    <span class="dash-sub">Jan - Dez</span>
+                </div>
+                <div class="dash-card">
+                    <span class="dash-label">📈 Ø / Monat</span>
+                    <span class="dash-val" id="valAvg">0h</span>
+                    <span class="dash-sub">in Saison</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
+                <div class="bar-chart" id="weekChart"></div>
+            </div>
+
+            <div style="margin-top:20px; font-size:0.8em; color:#666">
+                Total (Lifetime): <span id="totalHours" style="color:white; font-weight:bold">0</span>h
+            </div>
+
+            <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
+            <ul id="logList" class="log-list"></ul>
         </div>
-        <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern & von Freizeit abziehen</button>
-    </div>
-
-    <div class="stat-filter">
-        <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
-        <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
-        <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
-        <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
-    </div>
-
-    <div class="dashboard-grid">
-        <div class="dash-card">
-            <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
-            <span class="dash-val" id="valSeason">0h</span>
-            <span class="dash-sub">Seit Sept.</span>
         </div>
-        <div class="dash-card">
-            <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
-            <span class="dash-val" id="valYear">0h</span>
-            <span class="dash-sub">Jan - Dez</span>
-        </div>
-        <div class="dash-card">
-            <span class="dash-label">📈 Ø / Monat</span>
-            <span class="dash-val" id="valAvg">0h</span>
-            <span class="dash-sub">in Saison</span>
-        </div>
-    </div>
-
-    <div class="chart-container">
-        <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
-        <div class="bar-chart" id="weekChart"></div>
-    </div>
-
-    <div style="margin-top:20px; font-size:0.8em; color:#666">
-        Total (Lifetime): <span id="totalHours" style="color:white; font-weight:bold">0</span>h
-    </div>
-
-    <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
-    <ul id="logList" class="log-list"></ul>
 </div>
 
 <script type="module">
@@ -174,12 +242,25 @@
     let calculatedStats = {}; 
     let currentStatView = "FS"; 
 
-    // Farben und Labels erweitert
+    // Farben und Labels
     const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2' };
     const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf' };
 
     // Datum-Input auf Heute setzen
     document.getElementById('sleepDate').valueAsDate = new Date();
+
+    // --- MENÜ TOGGLE FUNKTION ---
+    window.toggleMenu = function() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+    // Klick außerhalb schließt Menü (Mobile)
+    document.addEventListener('click', (e) => {
+        const sidebar = document.getElementById('sidebar');
+        const btn = document.querySelector('.menu-toggle');
+        if(window.innerWidth <= 768 && !sidebar.contains(e.target) && !btn.contains(e.target) && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        }
+    });
 
     function getSeasonTag(timestamp) {
         const d = new Date(timestamp);
@@ -242,7 +323,7 @@
         });
     }
 
-    // --- NEUE FUNKTION: SCHLAF NACHTRAGEN ---
+    // --- SCHLAF NACHTRAGEN ---
     window.addSleep = function() {
         const h = parseFloat(document.getElementById('sleepHours').value);
         if(!h || h <= 0) return alert("Bitte Stunden eingeben");
@@ -253,7 +334,6 @@
         const dateStr = dateInput.toLocaleDateString(); 
         const durationMs = h * 60 * 60 * 1000;
         
-        // Pseudo Startzeit (08:00 morgens des gewählten Tages) für Sortierung
         const entryTimestamp = dateInput.setHours(8,0,0,0);
 
         // 1. Schlaf eintragen
@@ -273,16 +353,13 @@
 
         Object.entries(historyData).forEach(([key, val]) => {
             if(timeToDeduct <= 0) return;
-            // Suche Freizeit Einträge am gleichen Tag (String Vergleich)
             if(val.category === 'Freizeit' && val.date === dateStr) {
                 if(val.duration > timeToDeduct) {
-                    // Eintrag kürzen
                     const newDur = val.duration - timeToDeduct;
                     update(ref(db, 'history/' + key), { duration: newDur });
                     timeToDeduct = 0;
                     entriesUpdated++;
                 } else {
-                    // Eintrag löschen, da er komplett im Schlaf liegt
                     timeToDeduct -= val.duration;
                     remove(ref(db, 'history/' + key));
                     entriesUpdated++;
