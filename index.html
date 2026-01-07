@@ -16,11 +16,11 @@
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-label { font-size: 0.75em; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
         
-        #noteInput, #fsTypeSelect {
+        #noteInput, #fsTypeSelect, #sleepDate, #sleepHours {
             width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; 
             background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none;
         }
-        #noteInput:focus, #fsTypeSelect:focus { border-color: #0a84ff; }
+        #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; }
         #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
 
         .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
@@ -31,11 +31,16 @@
         .btn-fs { background: linear-gradient(135deg, #ff3b30, #cc2d24); } 
         .btn-uni { background: linear-gradient(135deg, #0a84ff, #0060c0); } 
         .btn-free { background: linear-gradient(135deg, #30d158, #249e42); }
+        .btn-sleep-action { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-top: 10px;}
         .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;}
         
+        /* Sleep Section */
+        .sleep-section { background: #252525; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
+        .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
         /* Stats Dashboard */
-        .stat-filter { display: flex; justify-content: center; gap: 10px; margin-top: 30px; margin-bottom: 10px; }
-        .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; }
+        .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
+        .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; margin-bottom: 5px;}
         .stat-tab.active { background: #444; color: white; border-color: #666; font-weight: bold; }
 
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
@@ -66,7 +71,7 @@
 
 <div class="container">
     <h1>🏎️ Season Tracker</h1>
-    <p class="subtitle">Saison 25/26 • Version 7.0</p>
+    <p class="subtitle">Saison 25/26 • Version 7.1</p>
 
     <div id="statusBadge" class="status-badge">Lade...</div>
     <div id="display">--:--:--</div>
@@ -97,10 +102,20 @@
 
     <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
 
+    <div class="sleep-section">
+        <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
+        <div class="sleep-grid">
+            <input type="date" id="sleepDate">
+            <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+        </div>
+        <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern & von Freizeit abziehen</button>
+    </div>
+
     <div class="stat-filter">
         <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
         <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
-        <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Freizeit</div>
+        <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
+        <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
     </div>
 
     <div class="dashboard-grid">
@@ -136,7 +151,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, get, child, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     // ⬇️⬇️⬇️ HIER WIEDER DEINE FIREBASE DATEN REIN ⬇️⬇️⬇️
     const firebaseConfig = {
@@ -156,21 +171,24 @@
     let tInterval;
     let localStartTime = 0;
     let historyData = {};
-    let calculatedStats = {}; // Speichert die berechneten Werte
-    let currentStatView = "FS"; // Standardansicht
+    let calculatedStats = {}; 
+    let currentStatView = "FS"; 
 
-    const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158' };
-    const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit' };
+    // Farben und Labels erweitert
+    const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2' };
+    const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf' };
 
-    // --- SAISON LOGIK ---
+    // Datum-Input auf Heute setzen
+    document.getElementById('sleepDate').valueAsDate = new Date();
+
     function getSeasonTag(timestamp) {
         const d = new Date(timestamp);
-        const month = d.getMonth(); // 0 = Jan, 8 = Sept
+        const month = d.getMonth(); 
         const year = d.getFullYear();
         if (month >= 8) {
-            return `${year.toString().substr(2)}/${(year+1).toString().substr(2)}`; // 25/26
+            return `${year.toString().substr(2)}/${(year+1).toString().substr(2)}`; 
         } else {
-            return `${(year-1).toString().substr(2)}/${year.toString().substr(2)}`; // 24/25
+            return `${(year-1).toString().substr(2)}/${year.toString().substr(2)}`; 
         }
     }
 
@@ -197,19 +215,13 @@
         processData(historyData); 
     });
 
-    // Globale Funktionen für Button Clicks
     window.startWork = function(category) {
         const now = new Date().getTime();
         const note = document.getElementById('noteInput').value;
         let subCat = "";
         if (category === 'FS') subCat = document.getElementById('fsTypeSelect').value;
 
-        // Auto-Pause Erkennung
         get(child(ref(db), 'status/lastStop')).then((snapshot) => {
-            if (snapshot.exists()) {
-                const lastStop = snapshot.val();
-                // Wenn mehr als 60s vergangen sind, logge Pause als Freizeit (optional, hier deaktiviert da User explizit trackt)
-            }
             set(ref(db, 'status'), { running: true, startTime: now, category: category, subCategory: subCat, lastStop: 0, note: note });
         });
     }
@@ -230,13 +242,65 @@
         });
     }
 
+    // --- NEUE FUNKTION: SCHLAF NACHTRAGEN ---
+    window.addSleep = function() {
+        const h = parseFloat(document.getElementById('sleepHours').value);
+        if(!h || h <= 0) return alert("Bitte Stunden eingeben");
+
+        const dateInput = document.getElementById('sleepDate').valueAsDate;
+        if(!dateInput) return alert("Bitte Datum wählen");
+        
+        const dateStr = dateInput.toLocaleDateString(); 
+        const durationMs = h * 60 * 60 * 1000;
+        
+        // Pseudo Startzeit (08:00 morgens des gewählten Tages) für Sortierung
+        const entryTimestamp = dateInput.setHours(8,0,0,0);
+
+        // 1. Schlaf eintragen
+        push(ref(db, 'history'), {
+            category: 'Schlaf',
+            subCategory: 'Nachtrag',
+            start: entryTimestamp - durationMs,
+            end: entryTimestamp,
+            duration: durationMs,
+            date: dateStr,
+            note: "Manuell nachgetragen"
+        });
+
+        // 2. Freizeit abziehen
+        let timeToDeduct = durationMs;
+        let entriesUpdated = 0;
+
+        Object.entries(historyData).forEach(([key, val]) => {
+            if(timeToDeduct <= 0) return;
+            // Suche Freizeit Einträge am gleichen Tag (String Vergleich)
+            if(val.category === 'Freizeit' && val.date === dateStr) {
+                if(val.duration > timeToDeduct) {
+                    // Eintrag kürzen
+                    const newDur = val.duration - timeToDeduct;
+                    update(ref(db, 'history/' + key), { duration: newDur });
+                    timeToDeduct = 0;
+                    entriesUpdated++;
+                } else {
+                    // Eintrag löschen, da er komplett im Schlaf liegt
+                    timeToDeduct -= val.duration;
+                    remove(ref(db, 'history/' + key));
+                    entriesUpdated++;
+                }
+            }
+        });
+
+        alert(`Schlaf gespeichert. ${entriesUpdated} Freizeit-Eintrag/Einträge wurde(n) gekürzt/gelöscht.`);
+        document.getElementById('sleepHours').value = "";
+    }
+
     window.switchStatView = function(view) {
         currentStatView = view;
-        // Tabs Styling
         document.querySelectorAll('.stat-tab').forEach(el => el.classList.remove('active'));
         if(view === 'FS') document.getElementById('tabFS').classList.add('active');
         if(view === 'Uni') document.getElementById('tabUni').classList.add('active');
         if(view === 'Freizeit') document.getElementById('tabFree').classList.add('active');
+        if(view === 'Schlaf') document.getElementById('tabSleep').classList.add('active');
         
         renderDashboardValues();
     }
@@ -271,51 +335,40 @@
     function updateUI(running, category, subCategory) {
         const startBtns = document.getElementById('startButtons');
         const stopBtn = document.getElementById('stopBtn');
-        const fsSelect = document.getElementById('fsTypeSelect');
         
-        // FS Select nur sichtbar wenn nicht am laufen oder wenn FS läuft
-        if(!running) {
-             // Im Stopp Modus immer sichtbar
-        }
-
         if(running) {
             startBtns.style.display = 'none';
             stopBtn.style.display = 'block';
-            stopBtn.style.borderColor = colors[category];
-            let badgeText = labels[category];
+            stopBtn.style.borderColor = colors[category] || '#666';
+            let badgeText = labels[category] || category;
             if(category === 'FS' && subCategory) badgeText += " • " + subCategory;
             document.getElementById('statusBadge').innerText = badgeText;
-            document.getElementById('statusBadge').style.color = colors[category];
+            document.getElementById('statusBadge').style.color = colors[category] || '#fff';
         } else {
             startBtns.style.display = 'grid';
             stopBtn.style.display = 'none';
         }
     }
 
-    // --- NEUE INTELLIGENTE ANALYSE ---
     function processData(data) {
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentSeasonTag = getSeasonTag(now.getTime()); 
         
-        // Saison Start (Sept des Startjahres)
         const seasonStartYear = parseInt("20" + currentSeasonTag.split('/')[0]); 
-        
-        // Monate für Durchschnitt (mindestens 1)
         let monthsPassed = (now.getFullYear() - seasonStartYear) * 12 + (now.getMonth() - 8);
         if (monthsPassed < 1) monthsPassed = 1; else monthsPassed += 1; 
 
-        // Initialisiere Stat Object
         calculatedStats = {
             'FS': { season: 0, year: 0 },
             'Uni': { season: 0, year: 0 },
-            'Freizeit': { season: 0, year: 0 }
+            'Freizeit': { season: 0, year: 0 },
+            'Schlaf': { season: 0, year: 0 }
         };
 
         let sumLifetime = 0;
-        let dailySums = {}; // Key: DateString, Value: {FS:0, Uni:0, Freizeit:0}
+        let dailySums = {}; 
 
-        // HTML Label setzen
         document.getElementById('lblSeason').innerText = currentSeasonTag;
         document.getElementById('lblYear').innerText = currentYear;
 
@@ -323,43 +376,31 @@
         
         entries.forEach(([key, entry]) => {
             const dur = entry.duration;
-            const cat = entry.category || 'FS'; // Fallback für alte Daten
+            const cat = entry.category || 'FS'; 
             
             sumLifetime += dur;
 
-            // Stats Berechnung für ALLE Kategorien
             if(calculatedStats[cat]) {
-                // Saison Summe
                 if (getSeasonTag(entry.start) === currentSeasonTag) {
                     calculatedStats[cat].season += dur;
                 }
-                // Jahres Summe
                 if (new Date(entry.start).getFullYear() === currentYear) {
                     calculatedStats[cat].year += dur;
                 }
             }
 
-            // Für Chart (Täglich gestapelt)
             const dateKey = new Date(entry.start).toLocaleDateString();
-            if(!dailySums[dateKey]) dailySums[dateKey] = { 'FS':0, 'Uni':0, 'Freizeit':0 };
+            if(!dailySums[dateKey]) dailySums[dateKey] = { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf':0 };
             if(dailySums[dateKey][cat] !== undefined) dailySums[dateKey][cat] += dur;
         });
 
-        // 1. Dashboard rendern (mit aktueller Ansicht)
         renderDashboardValues(monthsPassed);
-
-        // 2. Lifetime Total
         document.getElementById('totalHours').innerText = (sumLifetime / 3600000).toFixed(1);
-
-        // 3. Stacked Chart rendern
         renderChart(dailySums);
-
-        // 4. Liste rendern
         renderList(entries);
     }
 
     function renderDashboardValues(monthsPassedGlobal) {
-        // Wir holen die Monate neu, falls nicht übergeben (beim Tab Switch)
         if(!monthsPassedGlobal) {
             const now = new Date();
             const seasonStartYear = parseInt("20" + document.getElementById('lblSeason').innerText.split('/')[0]);
@@ -368,15 +409,12 @@
         }
 
         const stats = calculatedStats[currentStatView];
-        
-        // Helper: ms zu String
         const fmt = (ms) => Math.floor(ms/3600000) + "h " + Math.floor((ms%3600000)/60000) + "m";
         const fmtYr = (ms) => Math.floor(ms/3600000) + "h";
 
         if(stats) {
             document.getElementById('valSeason').innerText = fmt(stats.season);
             document.getElementById('valYear').innerText = fmtYr(stats.year);
-            
             let avg = stats.season / monthsPassedGlobal;
             document.getElementById('valAvg').innerText = (avg / 3600000).toFixed(1) + "h";
         }
@@ -387,24 +425,21 @@
         chartDiv.innerHTML = "";
         const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
         
-        // Letzte 7 Tage
         for (let i = 6; i >= 0; i--) {
             let d = new Date();
             d.setDate(d.getDate() - i);
             let dStr = d.toLocaleDateString();
             
-            let dayData = dailySums[dStr] || { 'FS':0, 'Uni':0, 'Freizeit':0 };
-            let totalMs = dayData.FS + dayData.Uni + dayData.Freizeit;
+            let dayData = dailySums[dStr] || { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf': 0 };
+            let totalMs = dayData.FS + dayData.Uni + dayData.Freizeit + (dayData.Schlaf || 0);
             
-            // Skalierung: 100% Höhe = 10 Stunden (36000000ms), gecappt bei 100%
-            // Oder relative Höhe? Besser relative zur max Höhe fixed (z.B. 12h)
-            const MAX_SCALE = 12 * 3600000; 
+            const MAX_SCALE = 16 * 3600000; 
             let totalHeightPercent = Math.min((totalMs / MAX_SCALE) * 100, 100);
 
-            // Segmente berechnen (relativ zur Gesamthöhe des Balkens)
             let pFS = totalMs > 0 ? (dayData.FS / totalMs) * 100 : 0;
             let pUni = totalMs > 0 ? (dayData.Uni / totalMs) * 100 : 0;
             let pFree = totalMs > 0 ? (dayData.Freizeit / totalMs) * 100 : 0;
+            let pSleep = totalMs > 0 ? (dayData.Schlaf / totalMs) * 100 : 0;
 
             chartDiv.innerHTML += `
             <div class="bar-col">
@@ -412,6 +447,7 @@
                     <div class="segment" style="height:${pFS}%; background:${colors.FS}"></div>
                     <div class="segment" style="height:${pUni}%; background:${colors.Uni}"></div>
                     <div class="segment" style="height:${pFree}%; background:${colors.Freizeit}"></div>
+                    <div class="segment" style="height:${pSleep}%; background:${colors.Schlaf}"></div>
                 </div>
                 <span class="bar-day">${days[d.getDay()]}</span>
             </div>`;
@@ -421,7 +457,6 @@
     function renderList(entries) {
         const list = document.getElementById('logList');
         list.innerHTML = "";
-        // Letzte 20 Einträge
         entries.slice(0, 20).forEach(([key, entry]) => {
             let li = document.createElement('li');
             let hrs = Math.floor(entry.duration / 3600000);
