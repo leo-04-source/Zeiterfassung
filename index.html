@@ -8,7 +8,6 @@
         /* Global Reset & Layout */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #121212; color: #e0e0e0; overflow-x: hidden; }
         
-        /* App Layout Container */
         .app-layout { display: flex; min-height: 100vh; }
 
         /* --- SIDEBAR STYLES --- */
@@ -44,37 +43,47 @@
         /* --- MAIN CONTENT STYLES --- */
         .main-content {
             flex: 1;
-            margin-left: 250px; /* Platz für Sidebar */
+            margin-left: 250px;
             padding: 20px;
             display: flex;
-            justify-content: center; /* Zentriert den Tracker */
+            justify-content: center;
             align-items: flex-start;
         }
 
-        /* Alte Container Styles (angepasst) */
-        .container { 
-            background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        .view-container {
             width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px;
+            display: none; /* Standardmäßig ausgeblendet, JS schaltet um */
         }
+        .view-container.active-view { display: block; }
+
+        /* Container Style für Karten-Look */
+        .card-box { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
 
         /* Hamburger Button (Mobile Only) */
         .menu-toggle {
-            display: none; /* Desktop unsichtbar */
+            display: none;
             position: fixed; top: 15px; left: 15px; z-index: 101;
             background: #2c2c2e; border: 1px solid #444; color: #fff;
             padding: 10px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
         }
 
-        /* --- RESTLICHE STYLES VOM TRACKER (v7.1) --- */
-        h1 { margin: 0; font-size: 1.5rem; color: #fff; }
+        /* --- UI ELEMENTS --- */
+        h1 { margin: 0; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
+        h2 { font-size: 1.2rem; color: #fff; margin-bottom: 15px; text-align: left; }
         p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
+        
         #display { font-size: 3.5em; margin: 10px 0 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
+        
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-label { font-size: 0.75em; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; text-transform: uppercase; font-weight: bold;}
+        
         #noteInput, #fsTypeSelect, #sleepDate, #sleepHours { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #2c2c2e; color: white; font-size: 1rem; box-sizing: border-box; outline: none; appearance: none; }
         #noteInput:focus, #fsTypeSelect:focus, #sleepDate:focus, #sleepHours:focus { border-color: #0a84ff; }
         #fsTypeSelect { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+        
         .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
+        
+        /* Button Grid (wiederverwendbar) */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         button { padding: 15px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.9rem; color: white; width: 100%;}
         button:active { transform: scale(0.96); }
@@ -83,22 +92,28 @@
         .btn-free { background: linear-gradient(135deg, #30d158, #249e42); }
         .btn-sleep-action { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-top: 10px;}
         .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;}
-        .sleep-section { background: #252525; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
-        .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        /* Stats & Dashboard */
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
         .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; margin-bottom: 5px;}
         .stat-tab.active { background: #444; color: white; border-color: #666; font-weight: bold; }
+        
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .dash-card { background: #2c2c2e; padding: 12px 8px; border-radius: 12px; text-align: left; transition: 0.3s; }
         .dash-label { font-size: 0.65em; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .dash-val { font-size: 1.1em; font-weight: 800; color: white; display: block;}
         .dash-sub { font-size: 0.7em; color: #666; font-weight: normal; margin-top: 2px; display: block;}
+
         .chart-container { margin-top: 20px; padding: 20px; background: #2c2c2e; border-radius: 12px; }
         .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding-bottom: 20px; }
         .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 12%; }
         .stacked-bar { width: 100%; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column-reverse; background: #3a3a3c; min-height: 2px; transition: height 0.5s;}
         .segment { width: 100%; }
         .bar-day { font-size: 0.6em; color: #888; margin-top: 5px; }
+
+        .sleep-section { background: #252525; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #333; }
+        .sleep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
         .btn-export { background: transparent; border: 1px solid #444; color: #888; padding: 10px; font-size: 0.8em; margin-top: 30px; width: auto; display: inline-block; border-radius: 8px;}
         .log-list { list-style: none; padding: 0; text-align: left; margin-top: 25px; font-size: 0.9em; }
         .log-list li { padding: 12px 0; border-bottom: 1px solid #333; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;}
@@ -106,11 +121,10 @@
         .log-note { display: block; color: #aaa; font-style: italic; font-size: 0.85em; }
         .sub-tag { display: inline-block; font-size: 0.75em; background: #3a3a3c; padding: 2px 6px; border-radius: 4px; color: #ddd; margin-left: 5px; vertical-align: middle;}
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); width: 250px; }
             .sidebar.open { transform: translateX(0); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
-            .main-content { margin-left: 0; padding-top: 60px; } /* Platz für Hamburger */
+            .main-content { margin-left: 0; padding-top: 60px; }
             .menu-toggle { display: block; }
         }
     </style>
@@ -123,105 +137,121 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-title">⚡ Tracker App</div>
         
-        <a href="#" class="nav-item active">
+        <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')">
             <span>🏠</span> Dashboard
-        </a>
-        <a href="#" class="nav-item" onclick="alert('Bald verfügbar!')">
-            <span>📅</span> Kalender (WIP)
-        </a>
-        <a href="#" class="nav-item" onclick="alert('Bald verfügbar!')">
-            <span>⚙️</span> Einstellungen (WIP)
-        </a>
+        </div>
+        <div class="nav-item" id="nav-tracker" onclick="showView('tracker')">
+            <span>⏱️</span> Tracker
+        </div>
+        <div class="nav-item" onclick="alert('Bald verfügbar!')">
+            <span>📅</span> Kalender
+        </div>
     </div>
 
     <div class="main-content">
-        <div class="container">
-            <h1>🏎️ Season Tracker</h1>
-            <p class="subtitle">Saison 25/26 • Version 7.2</p>
+        
+        <div id="view-dashboard" class="view-container active-view">
+            <div class="card-box">
+                <h1>Willkommen</h1>
+                <p class="subtitle">Saison 25/26 • Version 7.3</p>
 
-            <div id="statusBadge" class="status-badge">Lade...</div>
-            <div id="display">--:--:--</div>
-            
-            <div id="inputArea">
-                <div class="input-group">
-                    <span class="input-label">1. FS Kategorie (optional)</span>
-                    <select id="fsTypeSelect">
-                        <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
-                        <option value="Werkstatt">🔧 Werkstatt</option>
-                        <option value="Sitzung">🗣️ Sitzung</option>
-                        <option value="Außentermin">🌍 Außentermin</option>
-                        <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <span class="input-label">2. Notiz</span>
-                    <input type="text" id="noteInput" placeholder="Was machst du?">
-                </div>
-
-                <div id="startButtons" class="btn-grid">
+                <p class="input-label" style="text-align:center; margin-bottom:10px;">Schnellstart</p>
+                <div class="btn-grid start-buttons-container">
                     <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
                     <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
                     <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
                 </div>
-            </div>
 
-            <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
-
-            <div class="sleep-section">
-                <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
-                <div class="sleep-grid">
-                    <input type="date" id="sleepDate">
-                    <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+                <div class="stat-filter">
+                    <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
+                    <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
+                    <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
+                    <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
                 </div>
-                <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern & von Freizeit abziehen</button>
-            </div>
 
-            <div class="stat-filter">
-                <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
-                <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
-                <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
-                <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
-            </div>
+                <div class="dashboard-grid">
+                    <div class="dash-card">
+                        <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
+                        <span class="dash-val" id="valSeason">0h</span>
+                        <span class="dash-sub">Seit Sept.</span>
+                    </div>
+                    <div class="dash-card">
+                        <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
+                        <span class="dash-val" id="valYear">0h</span>
+                        <span class="dash-sub">Jan - Dez</span>
+                    </div>
+                    <div class="dash-card">
+                        <span class="dash-label">📈 Ø / Monat</span>
+                        <span class="dash-val" id="valAvg">0h</span>
+                        <span class="dash-sub">in Saison</span>
+                    </div>
+                </div>
 
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
-                    <span class="dash-val" id="valSeason">0h</span>
-                    <span class="dash-sub">Seit Sept.</span>
+                <div class="chart-container">
+                    <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
+                    <div class="bar-chart" id="weekChart"></div>
                 </div>
-                <div class="dash-card">
-                    <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
-                    <span class="dash-val" id="valYear">0h</span>
-                    <span class="dash-sub">Jan - Dez</span>
-                </div>
-                <div class="dash-card">
-                    <span class="dash-label">📈 Ø / Monat</span>
-                    <span class="dash-val" id="valAvg">0h</span>
-                    <span class="dash-sub">in Saison</span>
+                
+                <div style="margin-top:20px; font-size:0.8em; color:#666">
+                    Total (Lifetime): <span id="totalHours" style="color:white; font-weight:bold">0</span>h
                 </div>
             </div>
-
-            <div class="chart-container">
-                <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
-                <div class="bar-chart" id="weekChart"></div>
-            </div>
-
-            <div style="margin-top:20px; font-size:0.8em; color:#666">
-                Total (Lifetime): <span id="totalHours" style="color:white; font-weight:bold">0</span>h
-            </div>
-
-            <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
-            <ul id="logList" class="log-list"></ul>
         </div>
+
+        <div id="view-tracker" class="view-container">
+            <div class="card-box">
+                <h1>Aktuelle Session</h1>
+                <div id="statusBadge" class="status-badge">Lade...</div>
+                <div id="display">--:--:--</div>
+                
+                <div id="inputArea">
+                    <div class="input-group">
+                        <span class="input-label">1. FS Kategorie (optional)</span>
+                        <select id="fsTypeSelect">
+                            <option value="Arbeit">🛠️ Arbeit (Allgemein)</option>
+                            <option value="Werkstatt">🔧 Werkstatt</option>
+                            <option value="Sitzung">🗣️ Sitzung</option>
+                            <option value="Außentermin">🌍 Außentermin</option>
+                            <option value="Im Auto unterwegs">🚗 Im Auto unterwegs</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-label">2. Notiz</span>
+                        <input type="text" id="noteInput" placeholder="Was machst du?">
+                    </div>
+
+                    <div class="btn-grid start-buttons-container">
+                        <button class="btn-fs" onclick="startWork('FS')">🏎️ FS Team</button>
+                        <button class="btn-uni" onclick="startWork('Uni')">🎓 Uni</button>
+                        <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
+                    </div>
+                </div>
+
+                <button id="stopBtn" class="btn-stop" onclick="stopWork()">⏹ Session beenden</button>
+
+                <div class="sleep-section">
+                    <span class="input-label" style="margin-bottom:10px">😴 Schlaf nachtragen</span>
+                    <div class="sleep-grid">
+                        <input type="date" id="sleepDate">
+                        <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
+                    </div>
+                    <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern</button>
+                </div>
+
+                <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
+                <ul id="logList" class="log-list"></ul>
+            </div>
         </div>
+
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, get, child, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // ⬇️⬇️⬇️ HIER WIEDER DEINE FIREBASE DATEN REIN ⬇️⬇️⬇️
+    // ⬇️⬇️⬇️ FIREBASE CONFIG ⬇️⬇️⬇️
     const firebaseConfig = {
       apiKey: "AIzaSyAKlDrqhXgMASuYkHVQj4TveUt6kjF_pFM",
       authDomain: "zeit-97904.firebaseapp.com",
@@ -241,19 +271,29 @@
     let historyData = {};
     let calculatedStats = {}; 
     let currentStatView = "FS"; 
-
-    // Farben und Labels
     const colors = { 'FS': '#ff3b30', 'Uni': '#0a84ff', 'Freizeit': '#30d158', 'Schlaf': '#bf5af2' };
     const labels = { 'FS': 'FS Team', 'Uni': 'Uni', 'Freizeit': 'Freizeit', 'Schlaf': 'Schlaf' };
 
-    // Datum-Input auf Heute setzen
     document.getElementById('sleepDate').valueAsDate = new Date();
 
-    // --- MENÜ TOGGLE FUNKTION ---
+    // --- NAVIGATION LOGIC ---
+    window.showView = function(viewName) {
+        // Toggle Views
+        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active-view'));
+        document.getElementById('view-' + viewName).classList.add('active-view');
+
+        // Toggle Active Menu Item
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('nav-' + viewName).classList.add('active');
+
+        // Mobile Menu close
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
     window.toggleMenu = function() {
         document.getElementById('sidebar').classList.toggle('open');
     }
-    // Klick außerhalb schließt Menü (Mobile)
+
     document.addEventListener('click', (e) => {
         const sidebar = document.getElementById('sidebar');
         const btn = document.querySelector('.menu-toggle');
@@ -262,6 +302,7 @@
         }
     });
 
+    // --- APP LOGIC ---
     function getSeasonTag(timestamp) {
         const d = new Date(timestamp);
         const month = d.getMonth(); 
@@ -297,6 +338,9 @@
     });
 
     window.startWork = function(category) {
+        // Automatisch zum Tracker wechseln, damit man den Timer sieht
+        showView('tracker');
+
         const now = new Date().getTime();
         const note = document.getElementById('noteInput').value;
         let subCat = "";
@@ -323,7 +367,6 @@
         });
     }
 
-    // --- SCHLAF NACHTRAGEN ---
     window.addSleep = function() {
         const h = parseFloat(document.getElementById('sleepHours').value);
         if(!h || h <= 0) return alert("Bitte Stunden eingeben");
@@ -333,41 +376,27 @@
         
         const dateStr = dateInput.toLocaleDateString(); 
         const durationMs = h * 60 * 60 * 1000;
-        
         const entryTimestamp = dateInput.setHours(8,0,0,0);
 
-        // 1. Schlaf eintragen
         push(ref(db, 'history'), {
-            category: 'Schlaf',
-            subCategory: 'Nachtrag',
-            start: entryTimestamp - durationMs,
-            end: entryTimestamp,
-            duration: durationMs,
-            date: dateStr,
-            note: "Manuell nachgetragen"
+            category: 'Schlaf', subCategory: 'Nachtrag', start: entryTimestamp - durationMs, end: entryTimestamp,
+            duration: durationMs, date: dateStr, note: "Manuell nachgetragen"
         });
 
-        // 2. Freizeit abziehen
         let timeToDeduct = durationMs;
         let entriesUpdated = 0;
-
         Object.entries(historyData).forEach(([key, val]) => {
             if(timeToDeduct <= 0) return;
             if(val.category === 'Freizeit' && val.date === dateStr) {
                 if(val.duration > timeToDeduct) {
-                    const newDur = val.duration - timeToDeduct;
-                    update(ref(db, 'history/' + key), { duration: newDur });
-                    timeToDeduct = 0;
-                    entriesUpdated++;
+                    update(ref(db, 'history/' + key), { duration: val.duration - timeToDeduct });
+                    timeToDeduct = 0; entriesUpdated++;
                 } else {
-                    timeToDeduct -= val.duration;
-                    remove(ref(db, 'history/' + key));
-                    entriesUpdated++;
+                    timeToDeduct -= val.duration; remove(ref(db, 'history/' + key)); entriesUpdated++;
                 }
             }
         });
-
-        alert(`Schlaf gespeichert. ${entriesUpdated} Freizeit-Eintrag/Einträge wurde(n) gekürzt/gelöscht.`);
+        alert(`Schlaf gespeichert. ${entriesUpdated} Freizeit-Einträge verrechnet.`);
         document.getElementById('sleepHours').value = "";
     }
 
@@ -378,7 +407,6 @@
         if(view === 'Uni') document.getElementById('tabUni').classList.add('active');
         if(view === 'Freizeit') document.getElementById('tabFree').classList.add('active');
         if(view === 'Schlaf') document.getElementById('tabSleep').classList.add('active');
-        
         renderDashboardValues();
     }
 
@@ -410,11 +438,12 @@
     }
 
     function updateUI(running, category, subCategory) {
-        const startBtns = document.getElementById('startButtons');
+        // Wir verwenden Klassen statt IDs, da die Buttons jetzt doppelt existieren
+        const startBtnContainers = document.querySelectorAll('.start-buttons-container');
         const stopBtn = document.getElementById('stopBtn');
         
         if(running) {
-            startBtns.style.display = 'none';
+            startBtnContainers.forEach(el => el.style.display = 'none');
             stopBtn.style.display = 'block';
             stopBtn.style.borderColor = colors[category] || '#666';
             let badgeText = labels[category] || category;
@@ -422,7 +451,7 @@
             document.getElementById('statusBadge').innerText = badgeText;
             document.getElementById('statusBadge').style.color = colors[category] || '#fff';
         } else {
-            startBtns.style.display = 'grid';
+            startBtnContainers.forEach(el => el.style.display = 'grid');
             stopBtn.style.display = 'none';
         }
     }
@@ -436,13 +465,7 @@
         let monthsPassed = (now.getFullYear() - seasonStartYear) * 12 + (now.getMonth() - 8);
         if (monthsPassed < 1) monthsPassed = 1; else monthsPassed += 1; 
 
-        calculatedStats = {
-            'FS': { season: 0, year: 0 },
-            'Uni': { season: 0, year: 0 },
-            'Freizeit': { season: 0, year: 0 },
-            'Schlaf': { season: 0, year: 0 }
-        };
-
+        calculatedStats = { 'FS': {season:0,year:0}, 'Uni': {season:0,year:0}, 'Freizeit': {season:0,year:0}, 'Schlaf': {season:0,year:0} };
         let sumLifetime = 0;
         let dailySums = {}; 
 
@@ -454,18 +477,11 @@
         entries.forEach(([key, entry]) => {
             const dur = entry.duration;
             const cat = entry.category || 'FS'; 
-            
             sumLifetime += dur;
-
             if(calculatedStats[cat]) {
-                if (getSeasonTag(entry.start) === currentSeasonTag) {
-                    calculatedStats[cat].season += dur;
-                }
-                if (new Date(entry.start).getFullYear() === currentYear) {
-                    calculatedStats[cat].year += dur;
-                }
+                if (getSeasonTag(entry.start) === currentSeasonTag) calculatedStats[cat].season += dur;
+                if (new Date(entry.start).getFullYear() === currentYear) calculatedStats[cat].year += dur;
             }
-
             const dateKey = new Date(entry.start).toLocaleDateString();
             if(!dailySums[dateKey]) dailySums[dateKey] = { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf':0 };
             if(dailySums[dateKey][cat] !== undefined) dailySums[dateKey][cat] += dur;
@@ -484,7 +500,6 @@
             monthsPassedGlobal = (now.getFullYear() - seasonStartYear) * 12 + (now.getMonth() - 8);
             if (monthsPassedGlobal < 1) monthsPassedGlobal = 1; else monthsPassedGlobal += 1;
         }
-
         const stats = calculatedStats[currentStatView];
         const fmt = (ms) => Math.floor(ms/3600000) + "h " + Math.floor((ms%3600000)/60000) + "m";
         const fmtYr = (ms) => Math.floor(ms/3600000) + "h";
@@ -501,18 +516,13 @@
         const chartDiv = document.getElementById('weekChart');
         chartDiv.innerHTML = "";
         const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-        
         for (let i = 6; i >= 0; i--) {
-            let d = new Date();
-            d.setDate(d.getDate() - i);
+            let d = new Date(); d.setDate(d.getDate() - i);
             let dStr = d.toLocaleDateString();
-            
             let dayData = dailySums[dStr] || { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf': 0 };
             let totalMs = dayData.FS + dayData.Uni + dayData.Freizeit + (dayData.Schlaf || 0);
-            
             const MAX_SCALE = 16 * 3600000; 
             let totalHeightPercent = Math.min((totalMs / MAX_SCALE) * 100, 100);
-
             let pFS = totalMs > 0 ? (dayData.FS / totalMs) * 100 : 0;
             let pUni = totalMs > 0 ? (dayData.Uni / totalMs) * 100 : 0;
             let pFree = totalMs > 0 ? (dayData.Freizeit / totalMs) * 100 : 0;
@@ -540,7 +550,6 @@
             let mins = Math.floor((entry.duration % 3600000) / 60000);
             let subHtml = (entry.category === 'FS' && entry.subCategory) ? `<span class="sub-tag">${entry.subCategory}</span>` : "";
             let catColor = colors[entry.category] || "#888";
-
             li.innerHTML = `<div><span style="color:${catColor}; font-weight:bold;">● ${labels[entry.category] || entry.category}</span>${subHtml}<div class="log-meta" style="color:#666; font-size:0.8em; margin-top:2px;">${new Date(entry.start).toLocaleDateString()} ${new Date(entry.start).toLocaleTimeString().substr(0,5)}</div><span class="log-note">${entry.note || ""}</span></div><strong>${hrs}h ${mins}m</strong><button class="btn-delete" onclick="deleteItem('${key}')">×</button>`;
             list.appendChild(li);
         });
