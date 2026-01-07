@@ -52,14 +52,12 @@
 
         .view-container {
             width: 100%; max-width: 600px; text-align: center; margin-bottom: 80px;
-            display: none; /* Standardmäßig ausgeblendet, JS schaltet um */
+            display: none; 
         }
         .view-container.active-view { display: block; }
 
-        /* Container Style für Karten-Look */
         .card-box { background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
 
-        /* Hamburger Button (Mobile Only) */
         .menu-toggle {
             display: none;
             position: fixed; top: 15px; left: 15px; z-index: 101;
@@ -69,7 +67,6 @@
 
         /* --- UI ELEMENTS --- */
         h1 { margin: 0; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
-        h2 { font-size: 1.2rem; color: #fff; margin-bottom: 15px; text-align: left; }
         p.subtitle { color: #888; margin-bottom: 25px; font-size: 0.9em; }
         
         #display { font-size: 3.5em; margin: 10px 0 20px 0; font-weight: 800; font-variant-numeric: tabular-nums; color: #fff; }
@@ -83,7 +80,6 @@
         
         .status-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; background: #333; color: #888;}
         
-        /* Button Grid (wiederverwendbar) */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         button { padding: 15px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.9rem; color: white; width: 100%;}
         button:active { transform: scale(0.96); }
@@ -93,12 +89,11 @@
         .btn-sleep-action { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-top: 10px;}
         .btn-stop { background: #2c2c2e; border: 1px solid #ff453a; color: #ff453a; display: none; padding: 20px; font-size: 1rem;}
         
-        /* Stats & Dashboard */
         .stat-filter { display: flex; justify-content: center; gap: 5px; margin-top: 30px; margin-bottom: 10px; flex-wrap: wrap;}
         .stat-tab { background: #2c2c2e; border: 1px solid #444; color: #888; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; cursor: pointer; margin-bottom: 5px;}
         .stat-tab.active { background: #444; color: white; border-color: #666; font-weight: bold; }
         
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
         .dash-card { background: #2c2c2e; padding: 12px 8px; border-radius: 12px; text-align: left; transition: 0.3s; }
         .dash-label { font-size: 0.65em; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .dash-val { font-size: 1.1em; font-weight: 800; color: white; display: block;}
@@ -153,7 +148,7 @@
         <div id="view-dashboard" class="view-container active-view">
             <div class="card-box">
                 <h1>Willkommen</h1>
-                <p class="subtitle">Saison 25/26 • Version 7.3</p>
+                <p class="subtitle">Saison 25/26 • Version 7.4</p>
 
                 <p class="input-label" style="text-align:center; margin-bottom:10px;">Schnellstart</p>
                 <div class="btn-grid start-buttons-container">
@@ -162,34 +157,9 @@
                     <button class="btn-free" onclick="startWork('Freizeit')">🏖️ Freizeit</button>
                 </div>
 
-                <div class="stat-filter">
-                    <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
-                    <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
-                    <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
-                    <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
-                </div>
-
-                <div class="dashboard-grid">
-                    <div class="dash-card">
-                        <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
-                        <span class="dash-val" id="valSeason">0h</span>
-                        <span class="dash-sub">Seit Sept.</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
-                        <span class="dash-val" id="valYear">0h</span>
-                        <span class="dash-sub">Jan - Dez</span>
-                    </div>
-                    <div class="dash-card">
-                        <span class="dash-label">📈 Ø / Monat</span>
-                        <span class="dash-val" id="valAvg">0h</span>
-                        <span class="dash-sub">in Saison</span>
-                    </div>
-                </div>
-
                 <div class="chart-container">
                     <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
-                    <div class="bar-chart" id="weekChart"></div>
+                    <div class="bar-chart" id="weekChartDash"></div>
                 </div>
                 
                 <div style="margin-top:20px; font-size:0.8em; color:#666">
@@ -200,7 +170,7 @@
 
         <div id="view-tracker" class="view-container">
             <div class="card-box">
-                <h1>Aktuelle Session</h1>
+                <h1>Cockpit</h1>
                 <div id="statusBadge" class="status-badge">Lade...</div>
                 <div id="display">--:--:--</div>
                 
@@ -237,6 +207,36 @@
                         <input type="number" id="sleepHours" placeholder="Stunden" step="0.5">
                     </div>
                     <button class="btn-sleep-action" onclick="addSleep()">💾 Speichern</button>
+                </div>
+
+                <div class="stat-filter">
+                    <div class="stat-tab active" id="tabFS" onclick="switchStatView('FS')">🏎️ FS</div>
+                    <div class="stat-tab" id="tabUni" onclick="switchStatView('Uni')">🎓 Uni</div>
+                    <div class="stat-tab" id="tabFree" onclick="switchStatView('Freizeit')">🏖️ Frei</div>
+                    <div class="stat-tab" id="tabSleep" onclick="switchStatView('Schlaf')">😴 Schlaf</div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dash-card">
+                        <span class="dash-label">🗓️ Saison <span id="lblSeason">25/26</span></span>
+                        <span class="dash-val" id="valSeason">0h</span>
+                        <span class="dash-sub">Seit Sept.</span>
+                    </div>
+                    <div class="dash-card">
+                        <span class="dash-label">📅 Jahr <span id="lblYear">2026</span></span>
+                        <span class="dash-val" id="valYear">0h</span>
+                        <span class="dash-sub">Jan - Dez</span>
+                    </div>
+                    <div class="dash-card">
+                        <span class="dash-label">📈 Ø / Monat</span>
+                        <span class="dash-val" id="valAvg">0h</span>
+                        <span class="dash-sub">in Saison</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <span class="dash-label" style="margin-bottom:15px">Wochen-Trend (Alles)</span>
+                    <div class="bar-chart" id="weekChartTrack"></div>
                 </div>
 
                 <button class="btn-export" onclick="downloadCSV()">📥 Excel Export</button>
@@ -276,17 +276,11 @@
 
     document.getElementById('sleepDate').valueAsDate = new Date();
 
-    // --- NAVIGATION LOGIC ---
     window.showView = function(viewName) {
-        // Toggle Views
         document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active-view'));
         document.getElementById('view-' + viewName).classList.add('active-view');
-
-        // Toggle Active Menu Item
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('nav-' + viewName).classList.add('active');
-
-        // Mobile Menu close
         document.getElementById('sidebar').classList.remove('open');
     }
 
@@ -302,7 +296,6 @@
         }
     });
 
-    // --- APP LOGIC ---
     function getSeasonTag(timestamp) {
         const d = new Date(timestamp);
         const month = d.getMonth(); 
@@ -338,9 +331,7 @@
     });
 
     window.startWork = function(category) {
-        // Automatisch zum Tracker wechseln, damit man den Timer sieht
         showView('tracker');
-
         const now = new Date().getTime();
         const note = document.getElementById('noteInput').value;
         let subCat = "";
@@ -438,7 +429,6 @@
     }
 
     function updateUI(running, category, subCategory) {
-        // Wir verwenden Klassen statt IDs, da die Buttons jetzt doppelt existieren
         const startBtnContainers = document.querySelectorAll('.start-buttons-container');
         const stopBtn = document.getElementById('stopBtn');
         
@@ -513,32 +503,39 @@
     }
 
     function renderChart(dailySums) {
-        const chartDiv = document.getElementById('weekChart');
-        chartDiv.innerHTML = "";
+        // IDs von BEIDEN Charts (Dashboard & Tracker)
+        const targetIDs = ['weekChartDash', 'weekChartTrack'];
         const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-        for (let i = 6; i >= 0; i--) {
-            let d = new Date(); d.setDate(d.getDate() - i);
-            let dStr = d.toLocaleDateString();
-            let dayData = dailySums[dStr] || { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf': 0 };
-            let totalMs = dayData.FS + dayData.Uni + dayData.Freizeit + (dayData.Schlaf || 0);
-            const MAX_SCALE = 16 * 3600000; 
-            let totalHeightPercent = Math.min((totalMs / MAX_SCALE) * 100, 100);
-            let pFS = totalMs > 0 ? (dayData.FS / totalMs) * 100 : 0;
-            let pUni = totalMs > 0 ? (dayData.Uni / totalMs) * 100 : 0;
-            let pFree = totalMs > 0 ? (dayData.Freizeit / totalMs) * 100 : 0;
-            let pSleep = totalMs > 0 ? (dayData.Schlaf / totalMs) * 100 : 0;
 
-            chartDiv.innerHTML += `
-            <div class="bar-col">
-                <div class="stacked-bar" style="height:${totalHeightPercent}%;">
-                    <div class="segment" style="height:${pFS}%; background:${colors.FS}"></div>
-                    <div class="segment" style="height:${pUni}%; background:${colors.Uni}"></div>
-                    <div class="segment" style="height:${pFree}%; background:${colors.Freizeit}"></div>
-                    <div class="segment" style="height:${pSleep}%; background:${colors.Schlaf}"></div>
-                </div>
-                <span class="bar-day">${days[d.getDay()]}</span>
-            </div>`;
-        }
+        targetIDs.forEach(id => {
+            const chartDiv = document.getElementById(id);
+            if(!chartDiv) return; // Falls ID nicht gefunden (Sicherheit)
+
+            chartDiv.innerHTML = "";
+            for (let i = 6; i >= 0; i--) {
+                let d = new Date(); d.setDate(d.getDate() - i);
+                let dStr = d.toLocaleDateString();
+                let dayData = dailySums[dStr] || { 'FS':0, 'Uni':0, 'Freizeit':0, 'Schlaf': 0 };
+                let totalMs = dayData.FS + dayData.Uni + dayData.Freizeit + (dayData.Schlaf || 0);
+                const MAX_SCALE = 16 * 3600000; 
+                let totalHeightPercent = Math.min((totalMs / MAX_SCALE) * 100, 100);
+                let pFS = totalMs > 0 ? (dayData.FS / totalMs) * 100 : 0;
+                let pUni = totalMs > 0 ? (dayData.Uni / totalMs) * 100 : 0;
+                let pFree = totalMs > 0 ? (dayData.Freizeit / totalMs) * 100 : 0;
+                let pSleep = totalMs > 0 ? (dayData.Schlaf / totalMs) * 100 : 0;
+
+                chartDiv.innerHTML += `
+                <div class="bar-col">
+                    <div class="stacked-bar" style="height:${totalHeightPercent}%;">
+                        <div class="segment" style="height:${pFS}%; background:${colors.FS}"></div>
+                        <div class="segment" style="height:${pUni}%; background:${colors.Uni}"></div>
+                        <div class="segment" style="height:${pFree}%; background:${colors.Freizeit}"></div>
+                        <div class="segment" style="height:${pSleep}%; background:${colors.Schlaf}"></div>
+                    </div>
+                    <span class="bar-day">${days[d.getDay()]}</span>
+                </div>`;
+            }
+        });
     }
 
     function renderList(entries) {
